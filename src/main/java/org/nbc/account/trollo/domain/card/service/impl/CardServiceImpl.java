@@ -1,11 +1,13 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.exception.NotFoundBoardException;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -17,6 +19,7 @@ import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardExcept
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,8 +31,9 @@ public class CardServiceImpl implements CardService {
     private final ColumnRepository columnRepository;
 
     @Override
+    @Transactional
     public void createCard(final CardCreateRequestDto cardCreateRequestDto, final Long boardId,
-        final Long columnId, final User user) {
+        final Long sectionId, final User user) {
         // 보드를 찾는다.
         Board board = boardRepository.findById(boardId)
             .orElseThrow(() -> new NotFoundBoardException(ErrorCode.NOT_FOUND_BOARD));
@@ -39,19 +43,33 @@ public class CardServiceImpl implements CardService {
             throw new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD);
         }
 
-        // 해당 보드에 칼럼이 있는지 찾는다.
-        Section section = columnRepository.findById(columnId)
+        // 해당 보드에 색션이 있는지 찾는다.
+        Section section = columnRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         if (section.getBoard().getId().equals(board.getId())) {
             throw new NotFoundSectionInBoardException(ErrorCode.NOT_FOUND_SECTION_IN_BOARD);
         }
 
-        Card createdCard = Card.builder()
+        CardBuilder cardBuilder = Card.builder()
             .title(cardCreateRequestDto.title())
-            .section(section)
-            .build();
+            .prevCard(null)
+            .nextCard(null)
+            .section(section);
 
-        cardRepository.save(createdCard);
+        // 해당 색션에 다른 카드가 존재한다면, 마지막에 추가한다.
+        // 그렇지 않으면(색션에 카드가 없다면), 그냥 추가한다.
+        Optional<Card> lastCardOptional = cardRepository.findBySectionIdAndNextCardIsNull(
+            section.getId());
+        if(lastCardOptional.isPresent()){
+            Card lastCard = lastCardOptional.get();
+
+            Card createdCard = cardBuilder.prevCard(lastCard).build();
+            createdCard = cardRepository.save(createdCard);
+
+            lastCard.setNextCard(createdCard);
+        } else{
+            cardRepository.save(cardBuilder.build());
+        }
     }
 
 }
