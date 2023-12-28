@@ -56,20 +56,21 @@ public class CardServiceImpl implements CardService {
             .nextCard(null)
             .section(section);
 
-        // 해당 색션에 다른 카드가 존재한다면, 마지막에 추가한다.
-        // 그렇지 않으면(색션에 카드가 없다면), 그냥 추가한다.
+        // 해당 색션에 카드가 없다면, 그냥 추가한다.
         Optional<Card> lastCardOptional = cardRepository.findBySectionIdAndNextCardIsNull(
             section.getId());
-        if(lastCardOptional.isPresent()){
-            Card lastCard = lastCardOptional.get();
-
-            Card createdCard = cardBuilder.prevCard(lastCard).build();
-            createdCard = cardRepository.save(createdCard);
-
-            lastCard.setNextCard(createdCard);
-        } else{
+        if(lastCardOptional.isEmpty()) {
             cardRepository.save(cardBuilder.build());
+            return;
         }
+
+        // 해당 색션에 카드가 있다면, 맨 마지막 카드의 상태를 변경하고 새로운 카드를 맨 마지막에 추가한다.
+        Card lastCard = lastCardOptional.get();
+
+        Card createdCard = cardBuilder.prevCard(lastCard).build();
+        createdCard = cardRepository.save(createdCard);
+
+        lastCard.setNextCard(createdCard);
     }
 
 }
