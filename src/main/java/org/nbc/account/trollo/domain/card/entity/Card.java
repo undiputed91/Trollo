@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class Card {
     private String title;
 
     private String content;
+
+    private String color;
+
+    private LocalDateTime deadline;
 
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)

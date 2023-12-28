@@ -5,7 +5,11 @@ import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.exception.NotFoundBoardException;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
+import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
+import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -42,7 +46,7 @@ public class CardServiceImpl implements CardService {
         // 해당 보드에 칼럼이 있는지 찾는다.
         Section section = columnRepository.findById(columnId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
-        if (section.getBoard().getId().equals(board.getId())) {
+        if (!section.getBoard().getId().equals(board.getId())) {
             throw new NotFoundSectionInBoardException(ErrorCode.NOT_FOUND_SECTION_IN_BOARD);
         }
 
@@ -52,6 +56,20 @@ public class CardServiceImpl implements CardService {
             .build();
 
         cardRepository.save(createdCard);
+    }
+
+    @Override
+    public CardReadResponseDto getCard(final Long cardId, final User user) {
+        // 해당 카드가 있는 보드에 사용자가 속하는지 확인한다.
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        Board board = card.getSection().getBoard();
+        if (!userBoardRepository.existsByBoardAndUser(board, user)) {
+            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
+        }
+
+        return CardMapper.INSTANCE.toCardReadResponseDto(card);
     }
 
 }
