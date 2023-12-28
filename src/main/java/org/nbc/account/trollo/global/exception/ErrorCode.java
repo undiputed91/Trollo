@@ -20,8 +20,8 @@ public enum ErrorCode {
     NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "댓글을 찾지 못하였습니다."),
     NOT_FOUND_EMAIL(HttpStatus.NOT_FOUND, "이메일을 찾지 못하였습니다."),
     NOT_FOUND_USER_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 유저입니다."),
-    NOT_FOUND_COLUMN(HttpStatus.NOT_FOUND, "칼럼을 찾지 못하였습니다."),
-    NOT_FOUND_COLUMN_IN_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 칼럼입니다.");
+    NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "색션을 찾지 못하였습니다."),
+    NOT_FOUND_SECTION_IN_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 색션입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
