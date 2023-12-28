@@ -15,27 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private final S3Provider s3Provider;
+
     private final CommentRepository commentRepository;
 
-    public CommentSaveRes saveComment(CommentSaveReq req, MultipartFile multipartFile)
-        throws IOException {
-        String imageUrl = s3Provider.saveFile(multipartFile, "comment");
-        CommentEntity comment = CommentEntity.builder()
-            .content(req.getContent())
-            .imageUrl(imageUrl)
-            .build();
-        CommentEntity newCommentEntity = commentRepository.save(comment);
+    public CommentSaveRes saveComment(CommentSaveReq req) {
+        CommentEntity commentEntity = new CommentEntity(req.content());
         return CommentServiceMapper.INSTANCE.toCommentSaveRes(
-            commentRepository.save(CommentEntity.builder()
-                .content(req.getContent())
-                .imageUrl(imageUrl)
-                .build()));
+            commentRepository.save(commentEntity));
     }
 
-
     @Mapper
-    public interface CommentServiceMapper{
+    public interface CommentServiceMapper {
+
         CommentService.CommentServiceMapper INSTANCE = Mappers.getMapper(
             CommentService.CommentServiceMapper.class);
 
