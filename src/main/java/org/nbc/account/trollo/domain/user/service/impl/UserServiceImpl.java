@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.user.service.impl;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import org.nbc.account.trollo.domain.user.repository.UserRepository;
 import org.nbc.account.trollo.domain.user.service.UserService;
 
 import org.nbc.account.trollo.global.exception.ErrorCode;
+import org.nbc.account.trollo.global.jwt.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtUtil jwtUtil;
 
   public void signup(SignupReq signupReq) {
 
@@ -51,16 +54,18 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
   }
 
-  public void login(LoginReq loginReq) {
+  public void login(LoginReq loginReq, HttpServletResponse response) {
     String email = loginReq.getEmail();
     String password = loginReq.getPassword();
     // find email
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new IllegalArgumentException("이메일을 확인해주세요."));
+        .orElseThrow(() -> new UserDomainException(ErrorCode.BAD_LOGIN));
     // check password
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      throw new IllegalArgumentException("패스워드를 확인해주세요.");
+      throw new UserDomainException(ErrorCode.BAD_LOGIN);
     }
+
+    jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.getEmail()), response);
   }
 
 }
