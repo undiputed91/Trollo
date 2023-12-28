@@ -23,6 +23,7 @@ import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardExcept
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -61,6 +62,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CardReadResponseDto getCard(final Long cardId, final User user) {
         // 해당 카드가 있는 보드에 사용자가 속하는지 확인한다.
         Card card = cardRepository.findById(cardId)
@@ -82,6 +84,20 @@ public class CardServiceImpl implements CardService {
         }
 
         List<Card> cards = cardRepository.findAllBySection_Board_Id(boardId);
+        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CardAllReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
+        // 색션이 속한 보드에 사용자가 속하는지 확인한다.
+        Section section = columnRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
+        if(!userBoardRepository.existsByBoardIdAndUserId(section.getBoard().getId(), user.getId())){
+            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
+        }
+
+        List<Card> cards = cardRepository.findAllBySectionId(sectionId);
         return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
     }
 

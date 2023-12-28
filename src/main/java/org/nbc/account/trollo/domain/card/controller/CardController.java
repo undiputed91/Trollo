@@ -49,4 +49,13 @@ public class CardController {
         List<CardAllReadResponseDto> responseDto = cardService.getCardAllByBoard(boardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
+
+    @GetMapping("/sections/{sectionId}/cards")
+    public ApiResponse<List<CardAllReadResponseDto>> getCardsBySection(
+        @PathVariable Long sectionId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<CardAllReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
+    }
+
 }

@@ -7,4 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CardRepository extends JpaRepository<Card, Long> {
 
     List<Card> findAllBySection_Board_Id(Long boardId);
+
+    List<Card> findAllBySectionId(Long sectionId);
+
 }

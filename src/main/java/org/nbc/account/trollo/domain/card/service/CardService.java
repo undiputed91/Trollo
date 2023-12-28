@@ -13,4 +13,7 @@ public interface CardService {
     CardReadResponseDto getCard(Long cardId, User user);
 
     List<CardAllReadResponseDto> getCardAllByBoard(Long boardId, User user);
+
+    List<CardAllReadResponseDto> getCardAllBySection(Long sectionId, User user);
+
 }
