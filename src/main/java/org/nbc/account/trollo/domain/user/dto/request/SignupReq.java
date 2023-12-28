@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.user.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -11,8 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class SignupReq {
 
-  //@Size(min = 5,max = 25, message ="username should be longer than 3 and shorter than 15")
-  //@Pattern(regexp = "(^[a-zA-Z_0-9]*$)@(^[a-zA-Z_0-9]*$).(^[a-z]*$)", message = "only email@domain.com is allowed")
+  @Email
   private String email;
 
   private String nickname;
