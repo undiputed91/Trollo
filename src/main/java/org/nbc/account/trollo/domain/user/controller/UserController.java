@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
+import org.nbc.account.trollo.domain.user.exception.UserDomainException;
 import org.nbc.account.trollo.domain.user.service.UserService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
+import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.nbc.account.trollo.global.jwt.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -48,16 +50,11 @@ public class UserController {
     jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.getEmail()), response);
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }
-
   private void validate(BindingResult bindingResult){
     // Validation exception
-    List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-    if (fieldErrors.size() > 0) {
-      for (FieldError fieldError : bindingResult.getFieldErrors()) {
-        log.error(fieldError.getField() + " field : " + fieldError.getDefaultMessage());
-      }
-      throw new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요.");
-    }
+    if(bindingResult.hasErrors()){
+      throw new UserDomainException(ErrorCode.BAD_FORM);
+    };
   }
 
 }
