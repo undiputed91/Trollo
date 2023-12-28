@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+//import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("api/v1/cards/comments")
@@ -20,10 +19,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public void saveComment(
-        @RequestPart CommentSaveReq req,
-        @RequestPart MultipartFile multipartFile) throws IOException{
-        commentService.saveComment(req,multipartFile);
+    public void saveComment(@RequestPart CommentSaveReq req) {
+        commentService.saveComment(req);
     }
 
 }
