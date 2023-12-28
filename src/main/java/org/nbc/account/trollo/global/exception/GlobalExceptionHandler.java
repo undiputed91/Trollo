@@ -10,28 +10,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException ex){
-    return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
-  }
-  @ExceptionHandler({NullPointerException.class})
-  public ApiResponse<?> handleNullPointerException(NullPointerException ex){
-    return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
-  }
 
-  @ExceptionHandler({RejectedExecutionException.class})
-  public ApiResponse<?> handleRejectedExecutionException(RejectedExecutionException ex){
-    return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
-  }
+    @ExceptionHandler(CustomException.class)
+    public ApiResponse<?> handleCustomException(CustomException customException){
+        ErrorCode errorCode = customException.getErrorCode();
+        return new ApiResponse<>(errorCode.getHttpStatus().value(), errorCode.getMessage());
+    }
 
-  @ExceptionHandler({UsernameNotFoundException.class})
-  public ApiResponse<?> handleUsernameNotFoundException(UsernameNotFoundException ex){
-    return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
-  }
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
 
-  @ExceptionHandler({NoSuchElementException.class})
-  public ApiResponse<?> handleNoSuchElementException(NoSuchElementException ex){
-    return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
-  }
+    @ExceptionHandler({NullPointerException.class})
+    public ApiResponse<?> handleNullPointerException(NullPointerException ex) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler({RejectedExecutionException.class})
+    public ApiResponse<?> handleRejectedExecutionException(RejectedExecutionException ex) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler({UsernameNotFoundException.class})
+    public ApiResponse<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler({NoSuchElementException.class})
+    public ApiResponse<?> handleNoSuchElementException(NoSuchElementException ex) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
 
 }
