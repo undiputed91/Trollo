@@ -1,15 +1,10 @@
 package org.nbc.account.trollo.comment.dto.res;
 
+import jakarta.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+public record CommentSaveRes(
+    @Size(max = 500)
+    String content
+) {
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CommentSaveRes {
-    private String content;
 }
