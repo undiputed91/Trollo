@@ -1,10 +1,12 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.exception.NotFoundBoardException;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
@@ -38,8 +40,8 @@ public class CardServiceImpl implements CardService {
         Board board = boardRepository.findById(boardId)
             .orElseThrow(() -> new NotFoundBoardException(ErrorCode.NOT_FOUND_BOARD));
 
-        // 보드에 해당 사용자가 포함되어 있는지 확인한다.
-        if (userBoardRepository.existsByBoardAndUser(board, user)) {
+        // 해당 보드에 사용자가 포함되어 있는지 확인한다.
+        if (userBoardRepository.existsByBoardIdAndUserId(board.getId(), user.getId())) {
             throw new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD);
         }
 
@@ -65,11 +67,22 @@ public class CardServiceImpl implements CardService {
             .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
 
         Board board = card.getSection().getBoard();
-        if (!userBoardRepository.existsByBoardAndUser(board, user)) {
+        if (!userBoardRepository.existsByBoardIdAndUserId(board.getId(), user.getId())) {
             throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
         }
 
         return CardMapper.INSTANCE.toCardReadResponseDto(card);
+    }
+
+    @Override
+    public List<CardAllReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
+        // 해당 보드에 사용자가 속하는지 확인한다.
+        if(!userBoardRepository.existsByBoardIdAndUserId(boardId, user.getId())){
+            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
+        }
+
+        List<Card> cards = cardRepository.findAllBySection_Board_Id(boardId);
+        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
     }
 
 }

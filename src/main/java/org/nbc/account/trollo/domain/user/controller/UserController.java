@@ -46,6 +46,7 @@ public class UserController {
 
     userService.login(loginReq);
     jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.getEmail()), response);
+
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }
 

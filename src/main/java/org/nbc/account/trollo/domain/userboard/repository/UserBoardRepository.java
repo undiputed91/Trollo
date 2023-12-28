@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserBoardRepository extends JpaRepository<UserBoard, UserBoardId> {
 
-    boolean existsByBoardAndUser(Board board, User user);
+    boolean existsByBoardIdAndUserId(Long boardId, Long userId);
 }
