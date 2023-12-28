@@ -5,7 +5,7 @@ import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 
 public interface UserService {
 
-
   public void signup(SignupReq signupReq);
+  public void login(LoginReq loginReq);
 
 }

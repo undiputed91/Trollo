@@ -39,6 +39,15 @@ public class UserController {
     return new ApiResponse<>(HttpStatus.CREATED.value(), "completed signing up");
   }
 
+  // login
+  @PostMapping("/login")
+  public ApiResponse<Void> login(@RequestBody LoginReq loginReq,
+      HttpServletResponse response) {
+
+    userService.login(loginReq);
+    jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.getEmail()), response);
+    return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
+  }
 
   private void validate(BindingResult bindingResult){
     // Validation exception

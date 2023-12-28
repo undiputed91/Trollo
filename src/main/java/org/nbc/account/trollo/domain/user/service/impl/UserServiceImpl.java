@@ -43,4 +43,15 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
   }
 
+  public void login(LoginReq loginReq) {
+    String email = loginReq.getEmail();
+    String password = loginReq.getPassword();
+    // find email
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new IllegalArgumentException("이메일을 확인해주세요."));
+    // check password
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      throw new IllegalArgumentException("패스워드를 확인해주세요.");
+    }
+  }
 }
