@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @RequiredArgsConstructor
+@Validated
 public class SignupReq {
 
   //@Size(min = 5,max = 25, message ="username should be longer than 3 and shorter than 15")

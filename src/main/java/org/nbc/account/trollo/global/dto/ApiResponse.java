@@ -3,7 +3,6 @@ package org.nbc.account.trollo.global.dto;
 import lombok.Getter;
 
 @Getter
-
 public class ApiResponse<T> {
 
   private int status;

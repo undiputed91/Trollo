@@ -10,8 +10,8 @@ import org.nbc.account.trollo.domain.user.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
