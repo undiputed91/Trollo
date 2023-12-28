@@ -10,18 +10,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-@Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "comments")
-public class CommentEntity extends TimestampEntity {
+@Entity
+@Table(name = "TB_comments")
+public class CommentEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
     private String content;
-    private String imageUrl;
+
+    @Builder
+    public CommentEntity(String content) {
+        this.content = content;
+    }
 
 }
