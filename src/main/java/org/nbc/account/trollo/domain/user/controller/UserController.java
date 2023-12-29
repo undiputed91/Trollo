@@ -12,7 +12,9 @@ import org.nbc.account.trollo.domain.user.service.UserService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.nbc.account.trollo.global.jwt.JwtUtil;
+import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +33,8 @@ public class UserController {
   // sign up
   @PostMapping("/signup")
   public ApiResponse<Void> signup(
-      @Valid @RequestBody SignupReq signupReq,
-      BindingResult bindingResult) {
+      @Valid @RequestBody SignupReq signupReq) {
 
-    validate(bindingResult);
     userService.signup(signupReq);
     // if succeeded
     return new ApiResponse<>(HttpStatus.CREATED.value(), "completed signing up");
@@ -48,11 +48,11 @@ public class UserController {
     userService.login(loginReq,response);
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }
-  private void validate(BindingResult bindingResult){
-    // Validation exception
-    if(bindingResult.hasErrors()){
-      throw new UserDomainException(ErrorCode.BAD_FORM);
-    };
-  }
 
+  @PostMapping("/logintest")
+  public ApiResponse<String> login(
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+    return new ApiResponse<>(HttpStatus.OK.value(), "logintest succeeded",userDetails.getUser().getEmail());
+  }
 }
