@@ -2,21 +2,13 @@ package org.nbc.account.trollo.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
-import org.nbc.account.trollo.domain.user.exception.UserDomainException;
 import org.nbc.account.trollo.domain.user.service.UserService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
-import org.nbc.account.trollo.global.exception.ErrorCode;
-import org.nbc.account.trollo.global.jwt.JwtUtil;
-import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +37,7 @@ public class UserController {
   public ApiResponse<Void> login(@RequestBody LoginReq loginReq,
       HttpServletResponse response) {
 
-    userService.login(loginReq,response);
+    userService.login(loginReq, response);
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }
 
