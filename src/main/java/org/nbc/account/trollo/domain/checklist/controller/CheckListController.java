@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/cards")
 public class CheckListController {
 
-  private final CheckListService checkListService;
+    private final CheckListService checkListService;
 
-  @PostMapping("/{cardId}/checklist")
-  public ApiResponse<Void> createList(
-      @PathVariable Long cardId,
-      @RequestBody CheckListRequestDto requestDto,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    checkListService.createList(cardId,requestDto,userDetails);
-    return new ApiResponse<>(HttpStatus.CREATED.value(), "체크리스트 생성");
-  }
+    @PostMapping("/{cardId}/checklist")
+    public ApiResponse<Void> createList(
+        @PathVariable Long cardId,
+        @RequestBody CheckListRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        checkListService.createList(cardId, requestDto, userDetails);
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "체크리스트 생성");
+    }
 }

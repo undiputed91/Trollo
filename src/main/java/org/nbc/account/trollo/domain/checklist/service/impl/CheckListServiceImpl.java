@@ -16,23 +16,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class CheckListServiceImpl implements CheckListService {
 
-  private final CardRepository cardRepository;
-  private final CheckListRepository checkListRepository;
+    private final CardRepository cardRepository;
+    private final CheckListRepository checkListRepository;
 
-  @Override
-  public void createList(Long cardId, CheckListRequestDto requestDto, UserDetailsImpl userDetails) {
-    String description = requestDto.description();
-    boolean checkSign = requestDto.checkSign();
+    @Override
+    public void createList(Long cardId, CheckListRequestDto requestDto,
+        UserDetailsImpl userDetails) {
+        String description = requestDto.description();
+        boolean checkSign = requestDto.checkSign();
 
-    Card card = cardRepository.findById(cardId)
-        .orElseThrow(()->new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
 
-    CheckList checkList = CheckList.builder()
-        .card(card)
-        .description(description)
-        .checkSign(checkSign)
-        .build();
+        CheckList checkList = CheckList.builder()
+            .card(card)
+            .description(description)
+            .checkSign(checkSign)
+            .build();
 
-    checkListRepository.save(checkList);
-  }
+        checkListRepository.save(checkList);
+    }
 }

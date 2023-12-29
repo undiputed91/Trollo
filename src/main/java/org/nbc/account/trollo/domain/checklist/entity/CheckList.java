@@ -19,24 +19,24 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 @Table(name = "TB_CHECKLIST")
 public class CheckList {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column
-  private String description;
+    @Column
+    private String description;
 
-  @Column
-  private boolean checkSign;
+    @Column
+    private boolean checkSign;
 
-  @ManyToOne
-  @JoinColumn(name = "card_id")
-  private Card card;
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
-  @Builder
-  public CheckList(Card card, String description, boolean checkSign) {
-    this.description = description;
-    this.checkSign = checkSign;
-    this.card = card;
-  }
+    @Builder
+    public CheckList(Card card, String description, boolean checkSign) {
+        this.description = description;
+        this.checkSign = checkSign;
+        this.card = card;
+    }
 }
