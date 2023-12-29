@@ -5,6 +5,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -40,6 +41,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({NoSuchElementException.class})
     public ApiResponse<?> handleNoSuchElementException(NoSuchElementException ex) {
         return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ErrorCode errorCode = ErrorCode.BAD_FORM;
+        return new ApiResponse<>(errorCode.getHttpStatus().value(), errorCode.getMessage());
     }
 
 }
