@@ -41,7 +41,7 @@ public class CardController {
         CardReadResponseDto responseDto = cardService.getCard(cardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
-
+  
     @GetMapping("/boards/{boardId}/cards")
     public ApiResponse<List<CardAllReadResponseDto>> getCardsByBoard(
         @PathVariable Long boardId,
@@ -57,5 +57,5 @@ public class CardController {
         List<CardAllReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
-
+  
 }

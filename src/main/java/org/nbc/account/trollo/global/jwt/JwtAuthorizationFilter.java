@@ -23,6 +23,7 @@ import org.nbc.account.trollo.global.dto.ApiResponse;
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
   private final JwtUtil jwtUtil;
   private final UserDetailsService userDetailsService;
   private final ObjectMapper objectMapper;

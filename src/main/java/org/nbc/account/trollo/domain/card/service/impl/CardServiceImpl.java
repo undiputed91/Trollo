@@ -118,5 +118,5 @@ public class CardServiceImpl implements CardService {
         List<Card> cards = cardRepository.findAllBySectionId(sectionId);
         return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
     }
-
+  
 }
