@@ -18,7 +18,7 @@ import org.nbc.account.trollo.domain.user.entity.User;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "TB_USER_BOARD")
-@IdClass(UserBoardRole.class)
+@IdClass(UserBoardId.class)
 public class UserBoard {
 
     @Id
