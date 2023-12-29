@@ -40,4 +40,9 @@ public class CheckList {
         this.checkSign = checkSign;
         this.card = card;
     }
+
+    public void update(String description, boolean checkSign) {
+        this.description = description;
+        this.checkSign = checkSign;
+    }
 }
