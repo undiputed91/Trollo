@@ -25,7 +25,7 @@ public class InvitationServiceImpl implements InvitationService {
   public void createInvitation(Long boardId, Long userId, User user) {
 
     Board board = getBoardById(boardId);
-    checkIfParticipants(user,board);
+    checkIfParticipants(user, board);
 
     //check if the person is inviting oneself
     User guest = getGuestById(userId, user);
@@ -71,11 +71,12 @@ public class InvitationServiceImpl implements InvitationService {
 
   }
 
-  private void checkIfParticipants(User user , Board board){
-    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user,board).orElseThrow(()->
-        new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE));
+  private void checkIfParticipants(User user, Board board) {
+    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
+        .orElseThrow(() ->
+            new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE));
     //if the user is not participating but just waiting in line
-    if(userBoard.getRole().equals(UserBoardRole.WAITING)){
+    if (userBoard.getRole().equals(UserBoardRole.WAITING)) {
       throw new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE);
     }
   }
