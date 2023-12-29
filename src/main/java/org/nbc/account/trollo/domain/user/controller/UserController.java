@@ -36,7 +36,7 @@ public class UserController {
   @PostMapping("/login")
   public ApiResponse<Void> login(@RequestBody LoginReq loginReq,
       HttpServletResponse response) {
-
+    
     userService.login(loginReq, response);
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }

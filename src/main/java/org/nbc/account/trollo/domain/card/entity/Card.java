@@ -14,7 +14,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.section.entity.Section;
-import org.springframework.cglib.core.Local;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
