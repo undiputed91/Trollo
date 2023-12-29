@@ -6,8 +6,8 @@ import org.nbc.account.trollo.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class UserDetailsService {
 
   private final UserRepository userRepository;

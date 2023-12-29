@@ -18,9 +18,9 @@ import org.nbc.account.trollo.global.entity.Timestamped;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
+@Entity
+@Table(name = "TB_USER")
 public class User extends Timestamped {
 
   @Id

@@ -34,6 +34,9 @@ public class JwtUtil {
   @Value("${jwt.secret.key}") //SecretKey encoded with Base64
   private String secretKey;
 
+  @Value("${jwt.expired.period}")//token expiring period
+  private String expiredPeriod;
+
   private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
   private Key key;
@@ -68,11 +71,10 @@ public class JwtUtil {
     Date date = new Date();
 
     // token will be expired in 60 mins
-    long TOKEN_TIME = 60 * 60 * 1000;
     return BEARER_PREFIX +
         Jwts.builder()
             .setSubject(email)
-            .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+            .setExpiration(new Date(date.getTime() + Long.parseLong(expiredPeriod)))
             .setIssuedAt(date)
             .signWith(key, signatureAlgorithm)
             .compact();
@@ -85,6 +87,7 @@ public class JwtUtil {
 
       Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
       cookie.setPath("/");
+      cookie.setMaxAge(Integer.parseInt(expiredPeriod));
 
       // add Cookie to Response
       res.addCookie(cookie);
