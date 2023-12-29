@@ -23,46 +23,50 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-  private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-  private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  @Bean // encrypt password
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean // encrypt password
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean // authenticate
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-    return configuration.getAuthenticationManager();
-  }
-  @Bean // authorize
-  public JwtAuthorizationFilter jwtAuthorizationFilter() {
-    return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
-  }
+    @Bean // authenticate
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    // CSRF setting
-    http.csrf((csrf) -> csrf.disable());
+    @Bean // authorize
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
+    }
 
-    // setting to not use default(Session) way and use JWT
-    http.sessionManagement((sessionManagement) ->
-        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    );
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // CSRF setting
+        http.csrf((csrf) -> csrf.disable());
 
-    http.authorizeHttpRequests((authorizeHttpRequests) ->
-        authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // allow access to resources
-            .requestMatchers("/api/v1/users/**").permitAll() // allow all requests
-            .anyRequest().authenticated() // other requests should go through authorization
-    );
+        // setting to not use default(Session) way and use JWT
+        http.sessionManagement((sessionManagement) ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
-    // filter
-    http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); // username~ 전에 jwtAuthor 먼저
+        http.authorizeHttpRequests((authorizeHttpRequests) ->
+            authorizeHttpRequests
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .permitAll() // allow access to resources
+                .requestMatchers("/api/v1/users/**").permitAll() // allow all requests
+                .anyRequest().authenticated() // other requests should go through authorization
+        );
 
-    return http.build();
-  }
+        // filter
+        http.addFilterBefore(jwtAuthorizationFilter(),
+            UsernamePasswordAuthenticationFilter.class); // username~ 전에 jwtAuthor 먼저
+
+        return http.build();
+    }
 }

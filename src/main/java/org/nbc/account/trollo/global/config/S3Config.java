@@ -1,4 +1,4 @@
-package org.nbc.account.trollo.s3;
+package org.nbc.account.trollo.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

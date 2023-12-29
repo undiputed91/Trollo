@@ -2,6 +2,7 @@ package org.nbc.account.trollo.domain.card.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,11 +39,11 @@ public class Card {
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prev_card_id")
     private Card prevCard;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 

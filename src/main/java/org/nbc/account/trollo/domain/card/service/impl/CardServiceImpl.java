@@ -1,7 +1,7 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.exception.NotFoundBoardException;
@@ -10,10 +10,10 @@ import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
-import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -65,7 +65,7 @@ public class CardServiceImpl implements CardService {
         // 해당 색션에 카드가 없다면, 그냥 추가한다.
         Optional<Card> lastCardOptional = cardRepository.findBySectionIdAndNextCardIsNull(
             section.getId());
-        if(lastCardOptional.isEmpty()) {
+        if (lastCardOptional.isEmpty()) {
             cardRepository.save(cardBuilder.build());
             return;
         }
@@ -97,7 +97,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<CardAllReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
         // 해당 보드에 사용자가 속하는지 확인한다.
-        if(!userBoardRepository.existsByBoardIdAndUserId(boardId, user.getId())){
+        if (!userBoardRepository.existsByBoardIdAndUserId(boardId, user.getId())) {
             throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
         }
 
@@ -111,12 +111,13 @@ public class CardServiceImpl implements CardService {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
         Section section = columnRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
-        if(!userBoardRepository.existsByBoardIdAndUserId(section.getBoard().getId(), user.getId())){
+        if (!userBoardRepository.existsByBoardIdAndUserId(section.getBoard().getId(),
+            user.getId())) {
             throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
         }
 
         List<Card> cards = cardRepository.findAllBySectionId(sectionId);
         return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
     }
-  
+
 }

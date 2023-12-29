@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsService {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  public UserDetailsImpl getUserDetails(String email) {
-    User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException(email+" is not found"));
-    return new UserDetailsImpl(user);
-  }
+    public UserDetailsImpl getUserDetails(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException(email + " is not found"));
+        return new UserDetailsImpl(user);
+    }
 
 }
