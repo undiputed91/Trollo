@@ -38,12 +38,33 @@ public class Card {
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
+    @ManyToOne
+    @JoinColumn(name = "prev_card_id")
+    private Card prevCard;
+
+    @ManyToOne
+    @JoinColumn(name = "next_card_id")
+    private Card nextCard;
+
     @Builder
-    public Card(final String title, final String content,
-        final Section section) {
+    public Card(final String title, final String content, final String color,
+        final LocalDateTime deadline, final Section section,
+        final Card prevCard, final Card nextCard) {
         this.title = title;
         this.content = content;
+        this.color = color;
+        this.deadline = deadline;
         this.section = section;
+        this.prevCard = prevCard;
+        this.nextCard = nextCard;
+    }
+
+    public void setNextCard(Card card) {
+        this.nextCard = card;
+    }
+
+    public void setPrevCard(Card card) {
+        this.prevCard = card;
     }
 
     public void update(String title, String content, String color, LocalDateTime deadline) {
