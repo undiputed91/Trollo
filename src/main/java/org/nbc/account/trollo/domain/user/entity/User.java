@@ -17,7 +17,6 @@ import lombok.Setter;
 import org.nbc.account.trollo.global.entity.Timestamped;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "TB_USER")
