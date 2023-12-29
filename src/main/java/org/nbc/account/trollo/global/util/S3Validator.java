@@ -1,4 +1,4 @@
-package org.nbc.account.trollo.s3;
+package org.nbc.account.trollo.global.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 

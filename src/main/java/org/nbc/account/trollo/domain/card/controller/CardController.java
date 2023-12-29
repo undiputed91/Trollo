@@ -31,7 +31,7 @@ public class CardController {
         @RequestBody CardCreateRequestDto cardCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.createCard(cardCreateRequestDto, boardId, columnId, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "카드 생성", null);
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "카드 생성");
     }
 
     @GetMapping("/cards/{cardId}")
@@ -41,12 +41,13 @@ public class CardController {
         CardReadResponseDto responseDto = cardService.getCard(cardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
-  
+
     @GetMapping("/boards/{boardId}/cards")
     public ApiResponse<List<CardAllReadResponseDto>> getCardsByBoard(
         @PathVariable Long boardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<CardAllReadResponseDto> responseDto = cardService.getCardAllByBoard(boardId, userDetails.getUser());
+        List<CardAllReadResponseDto> responseDto = cardService.getCardAllByBoard(boardId,
+            userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
 
@@ -54,8 +55,9 @@ public class CardController {
     public ApiResponse<List<CardAllReadResponseDto>> getCardsBySection(
         @PathVariable Long sectionId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<CardAllReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId, userDetails.getUser());
+        List<CardAllReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId,
+            userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
-  
+
 }
