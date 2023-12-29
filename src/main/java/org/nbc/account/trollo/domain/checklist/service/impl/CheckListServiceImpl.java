@@ -70,4 +70,21 @@ public class CheckListServiceImpl implements CheckListService {
         }
         checkList.update(description,checkSign);
     }
+
+    @Override
+    public void deleteCheckList(Long cardId, Long id, UserDetailsImpl userDetails) {
+        User loginUser = userDetails.getUser();
+
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+        CheckList checkList = checkListRepository.findById(id)
+            .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
+
+        Long boardId = card.getSection().getBoard().getId();
+
+        if (!userBoardRepository.existsByBoardIdAndUserId(boardId, loginUser.getId())) {
+            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
+        }
+        checkListRepository.delete(checkList);
+    }
 }

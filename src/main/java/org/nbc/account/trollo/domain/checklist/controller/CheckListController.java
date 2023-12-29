@@ -7,6 +7,7 @@ import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,5 +39,14 @@ public class CheckListController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         checkListService.updateCheckList(cardId,id,requestDto,userDetails);
         return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 수정");
+    }
+
+    @DeleteMapping("/{cardId}/checklist/{id}")
+    public ApiResponse<Void> deleteCheckList(
+        @PathVariable Long cardId,
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        checkListService.deleteCheckList(cardId,id,userDetails);
+        return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 삭제");
     }
 }
