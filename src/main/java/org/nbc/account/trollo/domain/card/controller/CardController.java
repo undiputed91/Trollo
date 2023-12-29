@@ -33,7 +33,7 @@ public class CardController {
         @RequestBody CardCreateRequestDto cardCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.createCard(cardCreateRequestDto, boardId, columnId, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "카드 생성", null);
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "카드 생성");
     }
 
     @GetMapping("/cards/{cardId}")

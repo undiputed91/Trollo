@@ -3,7 +3,6 @@ package org.nbc.account.trollo.domain.user.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.service.UserService;
@@ -14,31 +13,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-  private final UserService userService;
+    private final UserService userService;
 
-  // sign up
-  @PostMapping("/signup")
-  public ApiResponse<Void> signup(
-      @Valid @RequestBody SignupReq signupReq) {
+    // sign up
+    @PostMapping("/signup")
+    public ApiResponse<Void> signup(
+        @Valid @RequestBody SignupReq signupReq) {
 
-    userService.signup(signupReq);
-    // if succeeded
-    return new ApiResponse<>(HttpStatus.CREATED.value(), "completed signing up");
-  }
+        userService.signup(signupReq);
+        // if succeeded
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "completed signing up");
+    }
 
-  // login
-  @PostMapping("/login")
-  public ApiResponse<Void> login(@RequestBody LoginReq loginReq,
-      HttpServletResponse response) {
-    
-    userService.login(loginReq, response);
-    return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
-  }
+    // login
+    @PostMapping("/login")
+    public ApiResponse<Void> login(@RequestBody LoginReq loginReq,
+        HttpServletResponse response) {
+
+        userService.login(loginReq, response);
+        return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
+    }
 
 }

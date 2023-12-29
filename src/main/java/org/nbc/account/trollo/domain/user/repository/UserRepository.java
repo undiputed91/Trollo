@@ -5,6 +5,9 @@ import org.nbc.account.trollo.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-  Optional<User> findByEmail(String email);
+
+    Optional<User> findByEmail(String email);
+
+    User findByNickname(String nickname);
 
 }

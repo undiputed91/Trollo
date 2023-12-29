@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.global.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
@@ -16,10 +17,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BaseEntity {
 
     @CreatedDate
+    @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 }
