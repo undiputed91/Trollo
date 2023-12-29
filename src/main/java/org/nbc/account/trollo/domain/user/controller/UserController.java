@@ -49,10 +49,4 @@ public class UserController {
     return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
   }
 
-  @PostMapping("/logintest")
-  public ApiResponse<String> login(
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-    return new ApiResponse<>(HttpStatus.OK.value(), "logintest succeeded",userDetails.getUser().getEmail());
-  }
 }

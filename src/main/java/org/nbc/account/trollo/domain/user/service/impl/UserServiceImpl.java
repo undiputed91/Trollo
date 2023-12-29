@@ -29,10 +29,10 @@ public class UserServiceImpl implements UserService {
 
   public void signup(SignupReq signupReq) {
 
-    String email = signupReq.getEmail();
-    String nickname = signupReq.getNickname();
-    String password = passwordEncoder.encode(signupReq.getPassword());
-    String passwordCheck = signupReq.getPasswordCheck();
+    String email = signupReq.email();
+    String nickname = signupReq.nickname();
+    String password = passwordEncoder.encode(signupReq.password());
+    String passwordCheck = signupReq.passwordCheck();
 
     // check username duplication
     if (userRepository.findByEmail(email).isPresent()) {
@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
   }
 
   public void login(LoginReq loginReq, HttpServletResponse response) {
-    String email = loginReq.getEmail();
-    String password = loginReq.getPassword();
+    String email = loginReq.email();
+    String password = loginReq.password();
     // find email
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new UserDomainException(ErrorCode.BAD_LOGIN));
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
       throw new UserDomainException(ErrorCode.BAD_LOGIN);
     }
 
-    jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.getEmail()), response);
+    jwtUtil.addJwtToCookie(jwtUtil.createToken(loginReq.email()), response);
   }
 
 }
