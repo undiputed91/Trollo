@@ -7,7 +7,7 @@ public interface CheckListService {
 
     void createList(Long cardId, CheckListRequestDto requestDto, UserDetailsImpl userDetails);
 
-    void updateCheckList(Long cardId, Long id, CheckListRequestDto requestDto, UserDetailsImpl userDetails);
+    void updateCheckList(Long cardId, Long checkListId, CheckListRequestDto requestDto, UserDetailsImpl userDetails);
 
-    void deleteCheckList(Long cardId, Long id, UserDetailsImpl userDetails);
+    void deleteCheckList(Long cardId, Long checkListId, UserDetailsImpl userDetails);
 }
