@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.card.entity.Card;
@@ -46,6 +45,7 @@ public class Notification {
         this.notificationEnum = event.getNotificationEnum();
         this.card = event.getCard();
         this.createdAt = LocalDateTime.now();
-        this.message = event.getCard().getId() + "번 카드" + event.getNotificationEnum().getWord() + "되었습니다.";
+        this.message =
+            event.getCard().getId() + "번 카드" + event.getNotificationEnum().getWord() + "되었습니다.";
     }
 }
