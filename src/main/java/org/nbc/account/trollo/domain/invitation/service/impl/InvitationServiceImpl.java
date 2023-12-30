@@ -68,13 +68,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     Board board = getBoardById(boardId);
 
-    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
-        .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
-
-    //if the user is not waiting but a participant or a creator of the board
-    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
-      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
-    }
+    UserBoard userBoard = getInvitation(user, board);
 
     //delete existing User and Board relation (invitation) to not use @Setter in UserBoard Entity
     userBoardRepository.deleteByUserAndBoard(user, board);
@@ -86,6 +80,8 @@ public class InvitationServiceImpl implements InvitationService {
         newUserBoard.getRole());
 
   }
+
+
 
   private User getGuestById(Long userId, User user) {
 
@@ -122,6 +118,18 @@ public class InvitationServiceImpl implements InvitationService {
     if (userBoard.getRole().equals(UserBoardRole.WAITING)) {
       throw new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE);
     }
+  }
+
+  private UserBoard getInvitation(User user, Board board) {
+    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
+        .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
+
+    //if the user is not waiting but a participant or a creator of the board
+    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
+      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
+    }
+
+    return userBoard;
   }
 
 }
