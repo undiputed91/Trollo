@@ -1,8 +1,10 @@
 package org.nbc.account.trollo.domain.invitation.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
+import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
 import org.nbc.account.trollo.domain.invitation.exception.InvitationDomainException;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.domain.user.entity.User;
@@ -42,6 +44,19 @@ public class InvitationServiceImpl implements InvitationService {
         .build();
     userBoardRepository.save(invitation);
 
+  }
+
+  @Override
+  public List<InvitationRes> getInvitations(User user) {
+
+    List<UserBoard> userBoardList = userBoardRepository.findAllByUserAndRoleEquals(user, UserBoardRole.WAITING).orElseThrow(()->
+        new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
+    );
+
+    List<InvitationRes> invitations = userBoardList.stream()
+        .map((UserBoard userboard)-> new InvitationRes(userboard.getBoard().getId())).toList();
+
+    return invitations;
   }
 
   private User getGuestById(Long userId, User user) {
