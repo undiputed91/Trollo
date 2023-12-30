@@ -19,6 +19,10 @@ public enum ErrorCode {
     ALREADY_EXIST_INVITATION(HttpStatus.BAD_REQUEST,"이미 초대된 사용자입니다."),
     ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST,"보드 구성원만 다른 사람을 초대할 수 있습니다."),
 
+    // 403
+    FORBIDDEN_ACCESS_CARD(HttpStatus.FORBIDDEN, "해당 카드에 접근할 수 없습니다."),
+    FORBIDDEN_ACCESS_BOARD(HttpStatus.FORBIDDEN, "해당 보드에 접근할 수 없습니다."),
+
     // 404
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾지 못하였습니다."),
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "보드를 찾지 못하였습니다."),
