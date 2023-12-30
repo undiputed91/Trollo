@@ -37,7 +37,7 @@ public class CheckListController {
         @PathVariable Long checkListId,
         @RequestBody CheckListRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        checkListService.updateCheckList(cardId,checkListId,requestDto,userDetails);
+        checkListService.updateCheckList(cardId, checkListId, requestDto, userDetails);
         return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 수정");
     }
 
@@ -46,7 +46,8 @@ public class CheckListController {
         @PathVariable Long cardId,
         @PathVariable Long checkListId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        checkListService.deleteCheckList(cardId,checkListId,userDetails);
+        checkListService.deleteCheckList(cardId, checkListId, userDetails);
         return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 삭제");
     }
+
 }

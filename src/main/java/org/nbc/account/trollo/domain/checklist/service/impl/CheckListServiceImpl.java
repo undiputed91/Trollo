@@ -68,7 +68,7 @@ public class CheckListServiceImpl implements CheckListService {
         if (!userBoardRepository.existsByBoardIdAndUserId(boardId, loginUser.getId())) {
             throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
         }
-        checkList.update(description,checkSign);
+        checkList.update(description, checkSign);
     }
 
     @Override
@@ -87,4 +87,5 @@ public class CheckListServiceImpl implements CheckListService {
         }
         checkListRepository.delete(checkList);
     }
+
 }

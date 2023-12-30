@@ -45,4 +45,5 @@ public class CheckList {
         this.description = description;
         this.checkSign = checkSign;
     }
+
 }
