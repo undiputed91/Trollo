@@ -71,7 +71,8 @@ public class InvitationServiceImpl implements InvitationService {
     UserBoard userBoard = getInvitation(user, board);
 
     //delete existing User and Board relation (invitation) to not use @Setter in UserBoard Entity
-    userBoardRepository.deleteByUserAndBoard(user, board);
+    userBoardRepository.delete(userBoard);
+
     //save new User and Board relation which means the person is a participant of the board
     UserBoard newUserBoard = new UserBoard(user, board, UserBoardRole.PARTICIPANT);
     userBoardRepository.save(newUserBoard);
