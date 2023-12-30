@@ -81,7 +81,15 @@ public class InvitationServiceImpl implements InvitationService {
 
   }
 
+  @Transactional
+  @Override
+  public void rejectInvitation(Long boardId, User user) {
 
+    Board board = getBoardById(boardId);
+    UserBoard userBoard = getInvitation(user, board);
+    userBoardRepository.delete(userBoard);
+
+  }
 
   private User getGuestById(Long userId, User user) {
 

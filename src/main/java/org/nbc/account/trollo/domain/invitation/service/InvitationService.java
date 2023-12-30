@@ -13,4 +13,6 @@ public interface InvitationService {
 
   UserBoardRes approveInvitation(Long boardId, User user);
 
+  void rejectInvitation(Long boardId, User user);
+
 }
