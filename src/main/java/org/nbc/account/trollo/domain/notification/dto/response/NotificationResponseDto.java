@@ -1,5 +1,12 @@
 package org.nbc.account.trollo.domain.notification.dto.response;
 
-public record NotificationResponseDto() {
+import java.time.LocalDateTime;
+import org.nbc.account.trollo.domain.notification.entity.NotificationEnum;
+
+public record NotificationResponseDto(
+    NotificationEnum notificationEnum,
+    String message,
+    LocalDateTime createdAt
+) {
 
 }
