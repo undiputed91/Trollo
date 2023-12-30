@@ -1,10 +1,12 @@
 package org.nbc.account.trollo.domain.invitation.service.impl;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.invitation.exception.InvitationDomainException;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.domain.user.entity.User;
@@ -58,6 +60,31 @@ public class InvitationServiceImpl implements InvitationService {
         .map((UserBoard userboard) -> new InvitationRes(userboard.getBoard().getId())).toList();
 
     return invitations;
+  }
+
+  @Transactional
+  @Override
+  public UserBoardRes approveInvitation(Long boardId, User user) {
+
+    Board board = getBoardById(boardId);
+
+    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
+        .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
+
+    //if the user is not waiting but a participant or a creator of the board
+    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
+      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
+    }
+
+    //delete existing User and Board relation (invitation) to not use @Setter in UserBoard Entity
+    userBoardRepository.deleteByUserAndBoard(user, board);
+    //save new User and Board relation which means the person is a participant of the board
+    UserBoard newUserBoard = new UserBoard(user, board, UserBoardRole.PARTICIPANT);
+    userBoardRepository.save(newUserBoard);
+
+    return new UserBoardRes(newUserBoard.getUser().getEmail(), newUserBoard.getBoard().getId(),
+        newUserBoard.getRole());
+
   }
 
   private User getGuestById(Long userId, User user) {
