@@ -3,6 +3,7 @@ package org.nbc.account.trollo.domain.invitation.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
@@ -11,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,4 +42,13 @@ public class InvitationController {
     return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은 초대 조회",
         invitationService.getInvitations(userDetails.getUser()));
   }
+
+  @PutMapping("/boards/{boardId}/approve")
+  public ApiResponse<UserBoardRes> approveInvitation(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      @PathVariable(name = "boardId") Long boardId) {
+
+    return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공",invitationService.approveInvitation(boardId, userDetails.getUser()));
+  }
+
 }
