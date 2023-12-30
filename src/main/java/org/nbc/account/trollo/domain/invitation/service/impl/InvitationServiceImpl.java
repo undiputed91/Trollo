@@ -49,12 +49,13 @@ public class InvitationServiceImpl implements InvitationService {
   @Override
   public List<InvitationRes> getInvitations(User user) {
 
-    List<UserBoard> userBoardList = userBoardRepository.findAllByUserAndRoleEquals(user, UserBoardRole.WAITING).orElseThrow(()->
+    List<UserBoard> userBoardList = userBoardRepository.findAllByUserAndRoleEquals(user,
+        UserBoardRole.WAITING).orElseThrow(() ->
         new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
     );
 
     List<InvitationRes> invitations = userBoardList.stream()
-        .map((UserBoard userboard)-> new InvitationRes(userboard.getBoard().getId())).toList();
+        .map((UserBoard userboard) -> new InvitationRes(userboard.getBoard().getId())).toList();
 
     return invitations;
   }

@@ -6,7 +6,8 @@ import org.nbc.account.trollo.domain.user.entity.User;
 
 public interface InvitationService {
 
-  public void createInvitation(Long boardId, Long userId, User user);
-  public List<InvitationRes> getInvitations(User user);
+  void createInvitation(Long boardId, Long userId, User user);
+
+  List<InvitationRes> getInvitations(User user);
 
 }

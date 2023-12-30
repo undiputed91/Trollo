@@ -37,6 +37,7 @@ public class InvitationController {
   public ApiResponse<List<InvitationRes>> getInvitations(
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은 초대 조회",invitationService.getInvitations(userDetails.getUser()));
+    return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은 초대 조회",
+        invitationService.getInvitations(userDetails.getUser()));
   }
 }
