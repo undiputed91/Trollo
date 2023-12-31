@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum NotificationEnum {
+public enum NotificationType {
     CREATED("가 생성"),
     UPDATED("가 수정"),
     DELETED("가 삭제"),

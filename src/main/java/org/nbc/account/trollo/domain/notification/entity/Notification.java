@@ -29,7 +29,7 @@ public class Notification {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private NotificationEnum fieldName;
+    private NotificationType fieldName;
 
     @Column
     private String fieldContent;

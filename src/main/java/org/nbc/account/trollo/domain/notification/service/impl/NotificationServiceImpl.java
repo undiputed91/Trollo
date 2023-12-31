@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.notification.dto.response.NotificationResponseDto;
 import org.nbc.account.trollo.domain.notification.entity.Notification;
-import org.nbc.account.trollo.domain.notification.entity.NotificationEnum;
+import org.nbc.account.trollo.domain.notification.entity.NotificationType;
 import org.nbc.account.trollo.domain.notification.repository.NotificationRepository;
 import org.nbc.account.trollo.domain.notification.service.NotifiactionService;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class NotificationServiceImpl implements NotifiactionService {
         List<NotificationResponseDto> notificationResponseDtos = new ArrayList<>();
 
         for (Notification notification : notificationList) {
-            NotificationEnum notificationEnum = notification.getFieldName();
+            NotificationType notificationEnum = notification.getFieldName();
             String message = notification.getFieldContent();
             LocalDateTime createdAt = notification.getCreatedAt();
             notificationResponseDtos.add(

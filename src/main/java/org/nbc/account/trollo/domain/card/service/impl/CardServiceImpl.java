@@ -17,7 +17,7 @@ import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
-import org.nbc.account.trollo.domain.notification.entity.NotificationEnum;
+import org.nbc.account.trollo.domain.notification.entity.NotificationType;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
@@ -82,7 +82,7 @@ public class CardServiceImpl implements CardService {
         createdCard = cardRepository.save(createdCard);
 
         lastCard.setNextCard(createdCard);
-        publisher.publishEvent(new CardEvent(createdCard, NotificationEnum.CREATED));
+        publisher.publishEvent(new CardEvent(createdCard, NotificationType.CREATED));
     }
 
     @Override
