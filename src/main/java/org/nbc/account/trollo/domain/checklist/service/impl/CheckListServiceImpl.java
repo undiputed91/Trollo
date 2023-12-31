@@ -5,6 +5,7 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
+import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.checklist.dto.request.CheckListRequestDto;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.checklist.repository.CheckListRepository;
@@ -22,6 +23,7 @@ public class CheckListServiceImpl implements CheckListService {
     private final CardRepository cardRepository;
     private final CheckListRepository checkListRepository;
     private final UserBoardRepository userBoardRepository;
+    private final CardService cardService;
 
     @Override
     public void createList(Long cardId, CheckListRequestDto requestDto,
@@ -35,9 +37,7 @@ public class CheckListServiceImpl implements CheckListService {
 
         Long boardId = card.getSection().getBoard().getId();
 
-        if (!userBoardRepository.existsByBoardIdAndUserId(boardId, loginUser.getId())) {
-            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
-        }
+        cardService.checkUserInBoard(boardId, loginUser.getId());
 
         CheckList checkList = CheckList.builder()
             .card(card)
