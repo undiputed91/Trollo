@@ -5,9 +5,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
-import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.ReceivedInvitationRes;
 import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
+import org.nbc.account.trollo.domain.invitation.entity.Invitation;
 import org.nbc.account.trollo.domain.invitation.exception.InvitationDomainException;
+import org.nbc.account.trollo.domain.invitation.repository.InvitationRepository;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.user.repository.UserRepository;
@@ -21,9 +23,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class InvitationServiceImpl implements InvitationService {
 
-  private final UserBoardRepository userBoardRepository;
+  private final InvitationRepository invitationRepository;
   private final UserRepository userRepository;
   private final BoardRepository boardRepository;
+  private final UserBoardRepository userBoardRepository;
 
   @Override
   public void createInvitation(Long boardId, Long userId, User user) {
@@ -32,32 +35,29 @@ public class InvitationServiceImpl implements InvitationService {
     checkIfParticipants(user, board);
 
     //check if the person is inviting oneself
-    User guest = getGuestById(userId, user);
+    User receiver = getReceiverById(userId, user);
 
-    //check if userboard doesn't exists with the boardId and userId
-    if (ifUserBoardExists(boardId, userId)) {
-      throw new InvitationDomainException(ErrorCode.ALREADY_EXIST_INVITATION);
-    }
+    //check if invitation exists with the boardId and userId
+    checkIfInvitationExists(receiver, board);
 
-    UserBoard invitation = UserBoard.builder()
-        .user(guest)
+    Invitation invitation = Invitation.builder()
+        .receiver(receiver)
         .board(board)
-        .role(UserBoardRole.WAITING)
+        .sender(user)
         .build();
-    userBoardRepository.save(invitation);
+    invitationRepository.save(invitation);
 
   }
 
   @Override
-  public List<InvitationRes> getInvitations(User user) {
+  public List<ReceivedInvitationRes> getInvitations(User user) {
 
-    List<UserBoard> userBoardList = userBoardRepository.findAllByUserAndRoleEquals(user,
-        UserBoardRole.WAITING).orElseThrow(() ->
+    List<Invitation> invitationList = invitationRepository.findAllByIdReceiver(user).orElseThrow(() ->
         new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
     );
 
-    List<InvitationRes> invitations = userBoardList.stream()
-        .map((UserBoard userboard) -> new InvitationRes(userboard.getBoard().getId())).toList();
+    List<ReceivedInvitationRes> invitations = invitationList.stream()
+        .map((Invitation invitation) -> new ReceivedInvitationRes(invitation.getId().getBoard().getId())).toList();
 
     return invitations;
   }
@@ -68,10 +68,10 @@ public class InvitationServiceImpl implements InvitationService {
 
     Board board = getBoardById(boardId);
 
-    UserBoard userBoard = getInvitation(user, board);
+    Invitation invitation = getInvitation(user, board);
 
-    //delete existing User and Board relation (invitation) to not use @Setter in UserBoard Entity
-    userBoardRepository.delete(userBoard);
+    //delete existing invitation
+    invitationRepository.delete(invitation);
 
     //save new User and Board relation which means the person is a participant of the board
     UserBoard newUserBoard = new UserBoard(user, board, UserBoardRole.PARTICIPANT);
@@ -87,12 +87,12 @@ public class InvitationServiceImpl implements InvitationService {
   public void rejectInvitation(Long boardId, User user) {
 
     Board board = getBoardById(boardId);
-    UserBoard userBoard = getInvitation(user, board);
-    userBoardRepository.delete(userBoard);
+    Invitation invitation = getInvitation(user, board);
+    invitationRepository.delete(invitation);
 
   }
 
-  private User getGuestById(Long userId, User user) {
+  private User getReceiverById(Long userId, User user) {
 
     User guest = userRepository.findById(userId).orElseThrow(() ->
         new InvitationDomainException(ErrorCode.NOT_FOUND_USER));
@@ -113,9 +113,11 @@ public class InvitationServiceImpl implements InvitationService {
     return board;
   }
 
-  private boolean ifUserBoardExists(Long boardId, Long userId) {
+  private void checkIfInvitationExists(User receiver, Board board) {
 
-    return userBoardRepository.existsByBoardIdAndUserId(boardId, userId);
+    if(invitationRepository.existsByIdReceiverAndIdBoard(receiver, board)){
+      throw new InvitationDomainException(ErrorCode.ALREADY_EXIST_INVITATION);
+    }
 
   }
 
@@ -123,22 +125,13 @@ public class InvitationServiceImpl implements InvitationService {
     UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
         .orElseThrow(() ->
             new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE));
-    //if the user is not participating but just waiting in line
-    if (userBoard.getRole().equals(UserBoardRole.WAITING)) {
-      throw new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE);
-    }
   }
 
-  private UserBoard getInvitation(User user, Board board) {
-    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
+  private Invitation getInvitation(User receiver, Board board) {
+    Invitation invitation = invitationRepository.findInvitationByIdReceiverAndIdBoard(receiver, board)
         .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
 
-    //if the user is not waiting but a participant or a creator of the board
-    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
-      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
-    }
-
-    return userBoard;
+    return invitation;
   }
 
 }
