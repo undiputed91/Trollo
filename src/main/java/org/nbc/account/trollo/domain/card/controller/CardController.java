@@ -11,6 +11,7 @@ import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +70,14 @@ public class CardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCard(cardId, cardUpdateRequestDto, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 수정");
+    }
+
+    @DeleteMapping("/cards/{cardId}")
+    public ApiResponse<Void> deleteCard(
+        @PathVariable Long cardId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.deleteCard(cardId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "카드 삭제");
     }
 
 }

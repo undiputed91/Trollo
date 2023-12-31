@@ -133,6 +133,25 @@ public class CardServiceImpl implements CardService {
         );
     }
 
+    @Override
+    @Transactional
+    public void deleteCard(final Long cardId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        // 카드가 있는 보드에 사용자가 속하는지 확인한다.
+        Long boardId = card.getSection().getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        // 카드 삭제 시, 이전 카드와 다음 카드의 순서를 재설정한다.
+        Card prevCard = card.getPrevCard();
+        Card nextCard = card.getNextCard();
+        card.getPrevCard().setNextCard(nextCard);
+        card.getNextCard().setPrevCard(prevCard);
+
+        cardRepository.delete(card);
+    }
+
     private void checkUserInBoard(Long boardId, Long userId) {
         UserBoard userBoard = userBoardRepository.findByBoardIdAndUserId(boardId, userId)
             .orElseThrow(() -> new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD));
