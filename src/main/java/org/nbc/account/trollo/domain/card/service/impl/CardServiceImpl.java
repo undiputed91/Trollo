@@ -82,7 +82,7 @@ public class CardServiceImpl implements CardService {
         createdCard = cardRepository.save(createdCard);
 
         lastCard.setNextCard(createdCard);
-        publisher.publishEvent(new CardEvent(createdCard, NotificationType.CREATED));
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.CREATED));
     }
 
     @Override

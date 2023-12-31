@@ -51,9 +51,6 @@ public class Card {
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card")
-    private List<Notification> notificationList = new ArrayList<>();
-
     @Builder
     public Card(final String title, final String content, final String color,
         final LocalDateTime deadline, final Section section,

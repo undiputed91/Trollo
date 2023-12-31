@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.board.entity.Board;
+import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
 
 @Getter
@@ -38,14 +39,19 @@ public class Notification {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "card_id")
-    private Card card;
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Notification(CardEvent event) {
-        this.fieldName = event.notificationEnum();
-        this.card = event.card();
+        this.fieldName = event.notificationType();
         this.createdAt = LocalDateTime.now();
+        this.board = event.board();
+        this.user = event.user();
         this.fieldContent =
-            event.card().getId() + "번 카드" + event.notificationEnum().getWord() + "되었습니다.";
+            event.board() + "번 BOARD에서 카드" + event.notificationType().getWord() + "되었습니다.";
     }
 }
