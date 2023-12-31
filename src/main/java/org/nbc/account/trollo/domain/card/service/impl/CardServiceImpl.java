@@ -143,6 +143,12 @@ public class CardServiceImpl implements CardService {
         Long boardId = card.getSection().getBoard().getId();
         checkUserInBoard(boardId, user.getId());
 
+        // 카드 삭제 시, 이전 카드와 다음 카드의 순서를 재설정한다.
+        Card prevCard = card.getPrevCard();
+        Card nextCard = card.getNextCard();
+        card.getPrevCard().setNextCard(nextCard);
+        card.getNextCard().setPrevCard(prevCard);
+
         cardRepository.delete(card);
     }
 
