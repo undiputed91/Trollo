@@ -17,7 +17,7 @@ public class NotificationController {
 
     @GetMapping("api/v1/notifications")
     public ApiResponse<List<NotificationResponseDto>> getNotifications() {
-        List<NotificationResponseDto>responseDtos =  notifiactionService.getNotifications();
+        List<NotificationResponseDto> responseDtos = notifiactionService.getNotifications();
         return new ApiResponse<>(HttpStatus.OK.value(), "알림 조회", responseDtos);
     }
 }

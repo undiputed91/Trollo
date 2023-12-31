@@ -21,11 +21,13 @@ public class NotificationServiceImpl implements NotifiactionService {
     public List<NotificationResponseDto> getNotifications() {
         List<Notification> notificationList = notificationRepository.findAll();
         List<NotificationResponseDto> notificationResponseDtos = new ArrayList<>();
+
         for (Notification notification : notificationList) {
-            NotificationEnum notificationEnum = notification.getNotificationEnum();
-            String message = notification.getMessage();
+            NotificationEnum notificationEnum = notification.getFieldName();
+            String message = notification.getFieldContent();
             LocalDateTime createdAt = notification.getCreatedAt();
-            notificationResponseDtos.add(new NotificationResponseDto(notificationEnum,message,createdAt));
+            notificationResponseDtos.add(
+                new NotificationResponseDto(notificationEnum, message, createdAt));
         }
         return notificationResponseDtos;
     }

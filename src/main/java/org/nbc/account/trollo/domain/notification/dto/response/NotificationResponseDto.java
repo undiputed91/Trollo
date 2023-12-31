@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import org.nbc.account.trollo.domain.notification.entity.NotificationEnum;
 
 public record NotificationResponseDto(
-    NotificationEnum notificationEnum,
-    String message,
+    NotificationEnum fieldName,
+    String fieldContent,
     LocalDateTime createdAt
 ) {
 
