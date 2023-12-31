@@ -3,6 +3,7 @@ package org.nbc.account.trollo.domain.checklist.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessBoardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.checklist.dto.request.CheckListRequestDto;
