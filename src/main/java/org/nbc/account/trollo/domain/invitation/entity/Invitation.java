@@ -2,8 +2,6 @@ package org.nbc.account.trollo.domain.invitation.entity;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -13,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.user.entity.User;
-import org.nbc.account.trollo.domain.invitation.entity.InvitationId;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,7 +37,7 @@ public class Invitation {
   private User sender;
 
   @Builder
-  public Invitation(User receiver, User sender, Board board){
+  public Invitation(User receiver, User sender, Board board) {
     this.id = new InvitationId();
     id.setReceiver(receiver);
     id.setBoard(board);

@@ -52,12 +52,14 @@ public class InvitationServiceImpl implements InvitationService {
   @Override
   public List<ReceivedInvitationRes> getInvitations(User user) {
 
-    List<Invitation> invitationList = invitationRepository.findAllByIdReceiver(user).orElseThrow(() ->
-        new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
-    );
+    List<Invitation> invitationList = invitationRepository.findAllByIdReceiver(user)
+        .orElseThrow(() ->
+            new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
+        );
 
     List<ReceivedInvitationRes> invitations = invitationList.stream()
-        .map((Invitation invitation) -> new ReceivedInvitationRes(invitation.getId().getBoard().getId())).toList();
+        .map((Invitation invitation) -> new ReceivedInvitationRes(
+            invitation.getId().getBoard().getId())).toList();
 
     return invitations;
   }
@@ -115,7 +117,7 @@ public class InvitationServiceImpl implements InvitationService {
 
   private void checkIfInvitationExists(User receiver, Board board) {
 
-    if(invitationRepository.existsByIdReceiverAndIdBoard(receiver, board)){
+    if (invitationRepository.existsByIdReceiverAndIdBoard(receiver, board)) {
       throw new InvitationDomainException(ErrorCode.ALREADY_EXIST_INVITATION);
     }
 
@@ -128,7 +130,8 @@ public class InvitationServiceImpl implements InvitationService {
   }
 
   private Invitation getInvitation(User receiver, Board board) {
-    Invitation invitation = invitationRepository.findInvitationByIdReceiverAndIdBoard(receiver, board)
+    Invitation invitation = invitationRepository.findInvitationByIdReceiverAndIdBoard(receiver,
+            board)
         .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
 
     return invitation;
