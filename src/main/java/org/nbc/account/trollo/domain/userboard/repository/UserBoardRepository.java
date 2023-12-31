@@ -1,6 +1,5 @@
 package org.nbc.account.trollo.domain.userboard.repository;
 
-
 import java.util.List;
 import java.util.Optional;
 import org.nbc.account.trollo.domain.board.entity.Board;

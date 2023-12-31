@@ -31,7 +31,7 @@ public class CheckList {
     private boolean checkSign;
 
     @ManyToOne
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
     @Builder
@@ -40,4 +40,10 @@ public class CheckList {
         this.checkSign = checkSign;
         this.card = card;
     }
+
+    public void update(String description, boolean checkSign) {
+        this.description = description;
+        this.checkSign = checkSign;
+    }
+
 }
