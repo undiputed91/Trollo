@@ -2,7 +2,6 @@ package org.nbc.account.trollo.domain.checklist.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.card.entity.Card;
-import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
@@ -22,7 +21,6 @@ public class CheckListServiceImpl implements CheckListService {
 
     private final CardRepository cardRepository;
     private final CheckListRepository checkListRepository;
-    private final UserBoardRepository userBoardRepository;
     private final CardService cardService;
 
     @Override
