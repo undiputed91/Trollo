@@ -17,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.nbc.account.trollo.domain.notification.entity.Notification;
+import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.section.entity.Section;
 
 @Getter
@@ -50,6 +50,9 @@ public class Card {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
+
+    @OneToMany(mappedBy = "card")
+    private List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
     public Card(final String title, final String content, final String color,

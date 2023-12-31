@@ -12,7 +12,6 @@ import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
-import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessCardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
@@ -24,6 +23,9 @@ import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
 import org.nbc.account.trollo.domain.section.repository.ColumnRepository;
 import org.nbc.account.trollo.domain.user.entity.User;
+import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
+import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
+import org.nbc.account.trollo.domain.userboard.exception.ForbiddenAccessBoardException;
 import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardException;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
@@ -50,9 +52,7 @@ public class CardServiceImpl implements CardService {
             .orElseThrow(() -> new NotFoundBoardException(ErrorCode.NOT_FOUND_BOARD));
 
         // 해당 보드에 사용자가 포함되어 있는지 확인한다.
-        if (userBoardRepository.existsByBoardIdAndUserId(board.getId(), user.getId())) {
-            throw new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD);
-        }
+        checkUserInBoard(boardId, user.getId());
 
         // 해당 보드에 색션이 있는지 찾는다.
         Section section = columnRepository.findById(sectionId)
@@ -93,9 +93,7 @@ public class CardServiceImpl implements CardService {
             .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
 
         Board board = card.getSection().getBoard();
-        if (!userBoardRepository.existsByBoardIdAndUserId(board.getId(), user.getId())) {
-            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
-        }
+        checkUserInBoard(board.getId(), user.getId());
 
         return CardMapper.INSTANCE.toCardReadResponseDto(card);
     }
@@ -103,9 +101,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<CardAllReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
         // 해당 보드에 사용자가 속하는지 확인한다.
-        if (!userBoardRepository.existsByBoardIdAndUserId(boardId, user.getId())) {
-            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
-        }
+        checkUserInBoard(boardId, user.getId());
 
         List<Card> cards = cardRepository.findAllBySection_Board_Id(boardId);
         return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
@@ -117,10 +113,7 @@ public class CardServiceImpl implements CardService {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
         Section section = columnRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
-        if (!userBoardRepository.existsByBoardIdAndUserId(section.getBoard().getId(),
-            user.getId())) {
-            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
-        }
+        checkUserInBoard(section.getBoard().getId(), user.getId());
 
         List<Card> cards = cardRepository.findAllBySectionId(sectionId);
         return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
@@ -135,9 +128,7 @@ public class CardServiceImpl implements CardService {
 
         // 카드가 있는 보드에 사용자가 속하는지 확인한다.
         Long boardId = card.getSection().getBoard().getId();
-        if (!userBoardRepository.existsByBoardIdAndUserId(boardId, user.getId())) {
-            throw new ForbiddenAccessCardException(ErrorCode.FORBIDDEN_ACCESS_CARD);
-        }
+        checkUserInBoard(boardId, user.getId());
 
         card.update(
             cardUpdateRequestDto.title(),
@@ -145,6 +136,33 @@ public class CardServiceImpl implements CardService {
             cardUpdateRequestDto.color(),
             cardUpdateRequestDto.deadline()
         );
+    }
+
+    @Override
+    @Transactional
+    public void deleteCard(final Long cardId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        // 카드가 있는 보드에 사용자가 속하는지 확인한다.
+        Long boardId = card.getSection().getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        // 카드 삭제 시, 이전 카드와 다음 카드의 순서를 재설정한다.
+        Card prevCard = card.getPrevCard();
+        Card nextCard = card.getNextCard();
+        card.getPrevCard().setNextCard(nextCard);
+        card.getNextCard().setPrevCard(prevCard);
+
+        cardRepository.delete(card);
+    }
+
+    private void checkUserInBoard(Long boardId, Long userId) {
+        UserBoard userBoard = userBoardRepository.findByBoardIdAndUserId(boardId, userId)
+            .orElseThrow(() -> new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD));
+        if (userBoard.getRole() == UserBoardRole.WAITING) {
+            throw new ForbiddenAccessBoardException(ErrorCode.FORBIDDEN_ACCESS_BOARD);
+        }
     }
 
 }

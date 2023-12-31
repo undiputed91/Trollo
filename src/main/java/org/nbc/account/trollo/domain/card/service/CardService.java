@@ -19,4 +19,6 @@ public interface CardService {
     List<CardAllReadResponseDto> getCardAllBySection(Long sectionId, User user);
 
     void updateCard(Long cardId, CardUpdateRequestDto cardUpdateRequestDto, User user);
+
+    void deleteCard(Long cardId, User user);
 }
