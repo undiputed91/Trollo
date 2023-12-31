@@ -9,11 +9,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.notification.entity.Notification;
+import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoardId;
+import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,4 +38,15 @@ public class UserNotification {
 
     @Enumerated(EnumType.STRING)
     private UserNotificationStatus status;
+
+
+    public UserNotification(CardEvent event, Notification notification){
+        this.user = event.user();
+        this.notification = notification;
+        this.status = UserNotificationStatus.UNREAD;
+    }
+
+    public void change() {
+        this.status = UserNotificationStatus.READ;
+    }
 }
