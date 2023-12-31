@@ -16,4 +16,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Invitati
 
   boolean existsByIdReceiverAndIdBoard(User receiver, Board board);
 
+  Optional<List<Invitation>> findAllBySender(User sender);
+
 }

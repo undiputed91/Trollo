@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.InvitationsRes;
 import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.invitation.entity.Invitation;
 import org.nbc.account.trollo.domain.invitation.exception.InvitationDomainException;
@@ -50,18 +51,26 @@ public class InvitationServiceImpl implements InvitationService {
   }
 
   @Override
-  public List<InvitationRes> getInvitations(User user) {
+  public InvitationsRes getInvitations(User user) {
 
-    List<Invitation> invitationList = invitationRepository.findAllByIdReceiver(user)
+    List<Invitation> receivedInvitationList = invitationRepository.findAllByIdReceiver(user)
         .orElseThrow(() ->
             new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
         );
 
-    List<InvitationRes> invitations = invitationList.stream()
+    List<InvitationRes> receivedInvitations = receivedInvitationList.stream()
         .map((Invitation invitation) -> new InvitationRes(
             invitation.getId().getBoard().getId())).toList();
 
-    return invitations;
+    List<Invitation> sentInvitationList = invitationRepository.findAllBySender(user)
+        .orElseThrow(() ->
+            new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
+
+    List<InvitationRes> sentInvitations = sentInvitationList.stream()
+        .map((Invitation invitation) -> new InvitationRes(
+            invitation.getId().getBoard().getId())).toList();
+
+    return new InvitationsRes(receivedInvitations, sentInvitations);
   }
 
   @Transactional
