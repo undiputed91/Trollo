@@ -13,8 +13,7 @@ public interface CardMapper {
 
     CardMapper INSTANCE = Mappers.getMapper(CardMapper.class);
 
-    CardReadResponseDto toCardReadResponseDto(Card card,
-        List<CheckListResponseDto> checkListResponseDtoList);
+    CardReadResponseDto toCardReadResponseDto(Card card);
 
     CardAllReadResponseDto toCardAllReadResponseDto(Card card);
 

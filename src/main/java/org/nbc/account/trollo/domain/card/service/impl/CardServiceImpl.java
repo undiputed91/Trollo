@@ -19,7 +19,6 @@ import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
-import org.nbc.account.trollo.domain.checklist.exception.NotFoundCheckListException;
 import org.nbc.account.trollo.domain.checklist.repository.CheckListRepository;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
@@ -96,9 +95,9 @@ public class CardServiceImpl implements CardService {
         Board board = card.getSection().getBoard();
         checkUserInBoard(board.getId(), user.getId());
 
-        List<CheckListResponseDto> checkListResponseDtos = getCheckLists(cardId);
+        getCheckLists(card);
 
-        return CardMapper.INSTANCE.toCardReadResponseDto(card, checkListResponseDtos);
+        return CardMapper.INSTANCE.toCardReadResponseDto(card);
     }
 
     @Override
@@ -168,13 +167,10 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-    private List<CheckListResponseDto> getCheckLists(Long cardId) {
-        List<CheckList> checkLists = checkListRepository.findByCardId(cardId)
-            .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
-
+    private List<CheckListResponseDto> getCheckLists(Card card) {
+        List<CheckList> checkLists = card.getCheckLists();
         List<CheckList> checklistsWithTrue = checkListRepository.findByCardIdAndCheckSignIsTrue(
-                cardId)
-            .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
+            card.getId());
         double rate = (double) checklistsWithTrue.size() / checkLists.size();
 
         List<CheckListResponseDto> checkListResponseDtos = new ArrayList<>();
