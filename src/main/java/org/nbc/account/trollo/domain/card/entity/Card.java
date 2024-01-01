@@ -52,7 +52,7 @@ public class Card {
     private Card nextCard;
 
     @OneToMany(mappedBy = "card")
-    private List<CheckList> checkLists = new ArrayList<>();
+    private final List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
     public Card(final String title, final String content, final String color,

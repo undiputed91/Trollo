@@ -98,7 +98,7 @@ public class CardServiceImpl implements CardService {
 
         List<CheckListResponseDto> checkListResponseDtos = getCheckLists(cardId);
 
-        return CardMapper.INSTANCE.toCardReadResponseDto(card,checkListResponseDtos);
+        return CardMapper.INSTANCE.toCardReadResponseDto(card, checkListResponseDtos);
     }
 
     @Override
@@ -168,15 +168,16 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-    private List<CheckListResponseDto> getCheckLists(Long cardId){
+    private List<CheckListResponseDto> getCheckLists(Long cardId) {
         List<CheckList> checkLists = checkListRepository.findByCardId(cardId)
             .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
 
-        List<CheckList> checklistsWithTrue = checkListRepository.findByCardIdAndCheckSignIsTrue(cardId)
+        List<CheckList> checklistsWithTrue = checkListRepository.findByCardIdAndCheckSignIsTrue(
+                cardId)
             .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
         double rate = (double) checklistsWithTrue.size() / checkLists.size();
 
-        List<CheckListResponseDto>checkListResponseDtos = new ArrayList<>();
+        List<CheckListResponseDto> checkListResponseDtos = new ArrayList<>();
         for (CheckList checkList : checkLists) {
             CheckListResponseDto checkListResponseDto = CheckListResponseDto.builder()
                 .description(checkList.getDescription())
