@@ -182,6 +182,7 @@ public class CardServiceImpl implements CardService {
 
         fromCard.changeSequence(toCard, direction);
     }
+
     private void checkUserInBoard(Long boardId, Long userId) {
         UserBoard userBoard = userBoardRepository.findByBoardIdAndUserId(boardId, userId)
             .orElseThrow(() -> new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD));
