@@ -16,6 +16,7 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceException;
 import org.nbc.account.trollo.domain.card.exception.IllegalChangeSameCardException;
+import org.nbc.account.trollo.domain.card.exception.IllegalMoveToSectionException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
@@ -23,7 +24,7 @@ import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
-import org.nbc.account.trollo.domain.section.repository.ColumnRepository;
+import org.nbc.account.trollo.domain.section.repository.SectionRepository;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
@@ -41,7 +42,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
-    private final ColumnRepository columnRepository;
+    private final SectionRepository sectionRepository;
 
     @Override
     @Transactional
@@ -55,7 +56,7 @@ public class CardServiceImpl implements CardService {
         checkUserInBoard(boardId, user.getId());
 
         // 해당 보드에 색션이 있는지 찾는다.
-        Section section = columnRepository.findById(sectionId)
+        Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         if (!section.getBoard().getId().equals(board.getId())) {
             throw new NotFoundSectionInBoardException(ErrorCode.NOT_FOUND_SECTION_IN_BOARD);
@@ -110,7 +111,7 @@ public class CardServiceImpl implements CardService {
     @Transactional(readOnly = true)
     public List<CardAllReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
-        Section section = columnRepository.findById(sectionId)
+        Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         checkUserInBoard(section.getBoard().getId(), user.getId());
 
@@ -158,7 +159,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional
-    public void updateCardSequence(final Long fromCardId, final Long toCardId,
+    public void changeCardSequence(final Long fromCardId, final Long toCardId,
         final CardSequenceDirection direction,
         final User user) {
         Card fromCard = cardRepository.findById(fromCardId)
@@ -181,6 +182,32 @@ public class CardServiceImpl implements CardService {
         }
 
         fromCard.changeSequence(toCard, direction);
+    }
+
+    @Override
+    @Transactional
+    public void moveCardToSection(final Long cardId, final Long sectionId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        Long boardIdByCard = card.getSection().getBoard().getId();
+        checkUserInBoard(boardIdByCard, user.getId());
+
+        Section section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
+
+        Long boardIdBySection = section.getBoard().getId();
+        checkUserInBoard(boardIdBySection, user.getId());
+
+        if(!Objects.equals(boardIdByCard, boardIdBySection)){
+            throw new ForbiddenChangeCardSequenceException(ErrorCode.FORBIDDEN_CHANGE_CARD);
+        }
+
+        if(cardRepository.existsBySectionId(sectionId)){
+            throw new IllegalMoveToSectionException(ErrorCode.ILLEGAL_MOVE_TO_SECTION);
+        }
+
+        card.changeSection(section);
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {

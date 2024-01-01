@@ -20,6 +20,7 @@ public enum ErrorCode {
     ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST, "보드 구성원만 다른 사람을 초대할 수 있습니다."),
     BAD_SEQUENCE_DIRECTION(HttpStatus.BAD_REQUEST, "카드 순서는 previous/next로 바꿀 수 있습니다."),
     ILLEGAL_CHANGE_SAME_CARD(HttpStatus.BAD_REQUEST, "같은 카드에 대해서 순서를 바꿀 순 없습니다."),
+    ILLEGAL_MOVE_TO_SECTION(HttpStatus.BAD_REQUEST, "해당 API는 카드가 없는 색션으로만 이동시킬 수 있습니다."),
 
     // 403
     FORBIDDEN_ACCESS_CARD(HttpStatus.FORBIDDEN, "해당 카드에 접근할 수 없습니다."),
