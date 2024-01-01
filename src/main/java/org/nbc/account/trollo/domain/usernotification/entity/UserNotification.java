@@ -40,8 +40,8 @@ public class UserNotification {
     private UserNotificationStatus status;
 
 
-    public UserNotification(CardEvent event, Notification notification){
-        this.user = event.user();
+    public UserNotification(Notification notification,User user){
+        this.user = user;
         this.notification = notification;
         this.status = UserNotificationStatus.UNREAD;
     }

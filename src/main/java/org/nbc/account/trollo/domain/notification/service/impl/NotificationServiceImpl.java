@@ -12,7 +12,6 @@ import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessBoardExceptio
 import org.nbc.account.trollo.domain.notification.dto.response.NotificationResponseDto;
 import org.nbc.account.trollo.domain.notification.entity.Notification;
 import org.nbc.account.trollo.domain.notification.entity.NotificationType;
-import org.nbc.account.trollo.domain.notification.exception.NotFoundUnreadStatusException;
 import org.nbc.account.trollo.domain.notification.repository.NotificationRepository;
 import org.nbc.account.trollo.domain.notification.service.NotifiactionService;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
@@ -37,14 +36,16 @@ public class NotificationServiceImpl implements NotifiactionService {
 
     @Override
     @Transactional
-    public List<NotificationResponseDto> getNotifications(Long boardId, UserDetailsImpl userDetails) {
+    public List<NotificationResponseDto> getNotifications(Long boardId,
+        UserDetailsImpl userDetails) {
         Board board = boardRepository.findById(boardId)
             .orElseThrow(() -> new NotFoundBoardException(ErrorCode.NOT_FOUND_BOARD));
 
         checkUserInBoard(boardId, userDetails.getUser().getId());
 
-        UserNotification unreadStatus = userNotificationRepository.findByStatus(UserNotificationStatus.UNREAD)
-            .orElseThrow(() -> new NotFoundUnreadStatusException(ErrorCode.NOT_FOUND_UNREADSTATUS));
+        List<UserNotification> unreadStatus = userNotificationRepository.findAllByUserIdAndStatus(
+            userDetails.getUser().getId()
+            , UserNotificationStatus.UNREAD);
 
         List<Notification> notificationList = notificationRepository.findByBoardId(boardId);
         List<NotificationResponseDto> notificationResponseDtos = new ArrayList<>();
@@ -70,7 +71,9 @@ public class NotificationServiceImpl implements NotifiactionService {
     }
 
 
-    private void changeNotificationStatus(UserNotification unreadStatus) {
-        unreadStatus.change();
+    private void changeNotificationStatus(List<UserNotification> unreadStatus) {
+        for (UserNotification status : unreadStatus) {
+            status.change();
+        }
     }
 }

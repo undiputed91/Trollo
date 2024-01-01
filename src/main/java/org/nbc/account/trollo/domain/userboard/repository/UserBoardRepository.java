@@ -20,4 +20,6 @@ public interface UserBoardRepository extends JpaRepository<UserBoard, UserBoardI
     Optional<List<UserBoard>> findAllByUserAndRoleEquals(User user, UserBoardRole userBoardRole);
 
     void deleteByUserAndBoard(User user, Board board);
+
+    List<UserBoard> findAllByBoardId(Long id);
 }

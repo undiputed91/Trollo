@@ -136,6 +136,9 @@ public class CardServiceImpl implements CardService {
             cardUpdateRequestDto.color(),
             cardUpdateRequestDto.deadline()
         );
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.UPDATED));
     }
 
     @Override
@@ -155,6 +158,9 @@ public class CardServiceImpl implements CardService {
         card.getNextCard().setPrevCard(prevCard);
 
         cardRepository.delete(card);
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.DELETED));
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {
