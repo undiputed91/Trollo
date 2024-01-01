@@ -15,13 +15,16 @@ public enum ErrorCode {
     BAD_LOGIN(HttpStatus.BAD_REQUEST, "이메일 또는 패스워드를 확인해주세요."),
     BAD_FORM(HttpStatus.BAD_REQUEST, "입력 형식이 맞지 않습니다."),
     INVALID_PASSWORD_CHECK(HttpStatus.BAD_REQUEST, "password check가 password와 일치하지 않습니다."),
-    SELF_CANNOT_BE_INVITED(HttpStatus.BAD_REQUEST,"자기 자신은 보드에 초대될 수 없습니다."),
-    ALREADY_EXIST_INVITATION(HttpStatus.BAD_REQUEST,"이미 초대된 사용자입니다."),
-    ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST,"보드 구성원만 다른 사람을 초대할 수 있습니다."),
+    SELF_CANNOT_BE_INVITED(HttpStatus.BAD_REQUEST, "자기 자신은 보드에 초대될 수 없습니다."),
+    ALREADY_EXIST_INVITATION(HttpStatus.BAD_REQUEST, "이미 초대된 사용자입니다."),
+    ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST, "보드 구성원만 다른 사람을 초대할 수 있습니다."),
+    BAD_SEQUENCE_DIRECTION(HttpStatus.BAD_REQUEST, "카드 순서는 previous/next로 바꿀 수 있습니다."),
+    ILLEGAL_CHANGE_SAME_CARD(HttpStatus.BAD_REQUEST, "같은 카드에 대해서 순서를 바꿀 순 없습니다."),
 
     // 403
     FORBIDDEN_ACCESS_CARD(HttpStatus.FORBIDDEN, "해당 카드에 접근할 수 없습니다."),
     FORBIDDEN_ACCESS_BOARD(HttpStatus.FORBIDDEN, "해당 보드에 접근할 수 없습니다."),
+    FORBIDDEN_CHANGE_CARD(HttpStatus.FORBIDDEN, "같은 보드에 속한 카드끼리만 순서를 바꿀 수 있습니다."),
 
     // 404
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾지 못하였습니다."),
