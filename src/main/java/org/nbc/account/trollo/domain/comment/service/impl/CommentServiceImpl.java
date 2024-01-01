@@ -1,4 +1,4 @@
-package org.nbc.account.trollo.domain.comment;
+package org.nbc.account.trollo.domain.comment.service.impl;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -15,6 +15,7 @@ import org.nbc.account.trollo.domain.comment.entity.Comment;
 import org.nbc.account.trollo.domain.comment.exception.CommentDomainException;
 import org.nbc.account.trollo.domain.comment.mapper.CommentServiceMapper;
 import org.nbc.account.trollo.domain.comment.repository.CommentRepository;
+import org.nbc.account.trollo.domain.comment.service.CommentService;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
