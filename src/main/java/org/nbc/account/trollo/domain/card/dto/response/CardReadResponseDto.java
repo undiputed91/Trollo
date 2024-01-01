@@ -1,7 +1,9 @@
 package org.nbc.account.trollo.domain.card.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
+import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
 
 @Builder
 public record CardReadResponseDto(
@@ -9,7 +11,8 @@ public record CardReadResponseDto(
     String title,
     String content,
     String color,
-    LocalDateTime deadline
+    LocalDateTime deadline,
+    List<CheckListResponseDto> checkListResponseDtoList
 ) {
 
 }

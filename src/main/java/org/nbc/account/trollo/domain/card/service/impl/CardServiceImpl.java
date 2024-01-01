@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
+import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
+import org.nbc.account.trollo.domain.checklist.entity.CheckList;
+import org.nbc.account.trollo.domain.checklist.exception.NotFoundCheckListException;
+import org.nbc.account.trollo.domain.checklist.repository.CheckListRepository;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
@@ -38,6 +43,7 @@ public class CardServiceImpl implements CardService {
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
     private final ColumnRepository columnRepository;
+    private final CheckListRepository checkListRepository;
 
     @Override
     @Transactional
@@ -90,7 +96,9 @@ public class CardServiceImpl implements CardService {
         Board board = card.getSection().getBoard();
         checkUserInBoard(board.getId(), user.getId());
 
-        return CardMapper.INSTANCE.toCardReadResponseDto(card);
+        List<CheckListResponseDto> checkListResponseDtos = getCheckLists(cardId);
+
+        return CardMapper.INSTANCE.toCardReadResponseDto(card,checkListResponseDtos);
     }
 
     @Override
@@ -158,6 +166,26 @@ public class CardServiceImpl implements CardService {
         if (userBoard.getRole() == UserBoardRole.WAITING) {
             throw new ForbiddenAccessBoardException(ErrorCode.FORBIDDEN_ACCESS_BOARD);
         }
+    }
+
+    private List<CheckListResponseDto> getCheckLists(Long cardId){
+        List<CheckList> checkLists = checkListRepository.findByCardId(cardId)
+            .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
+
+        List<CheckList> checklistsWithTrue = checkListRepository.findByCardIdAndCheckSignIsTrue(cardId)
+            .orElseThrow(() -> new NotFoundCheckListException(ErrorCode.NOT_FOUND_CHECKLIST));
+        double rate = (double) checklistsWithTrue.size() / checkLists.size();
+
+        List<CheckListResponseDto>checkListResponseDtos = new ArrayList<>();
+        for (CheckList checkList : checkLists) {
+            CheckListResponseDto checkListResponseDto = CheckListResponseDto.builder()
+                .description(checkList.getDescription())
+                .checkSign(checkList.isCheckSign())
+                .rate(rate)
+                .build();
+            checkListResponseDtos.add(checkListResponseDto);
+        }
+        return checkListResponseDtos;
     }
 
 }
