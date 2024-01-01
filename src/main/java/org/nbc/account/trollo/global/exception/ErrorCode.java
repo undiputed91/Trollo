@@ -18,7 +18,7 @@ public enum ErrorCode {
     SELF_CANNOT_BE_INVITED(HttpStatus.BAD_REQUEST, "자기 자신은 보드에 초대될 수 없습니다."),
     ALREADY_EXIST_INVITATION(HttpStatus.BAD_REQUEST, "이미 초대된 사용자입니다."),
     ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST, "보드 구성원만 다른 사람을 초대할 수 있습니다."),
-    BAD_SEQUENCE_DIRECTION(HttpStatus.BAD_REQUEST, "카드 순서는 above, below로만 바꿀 수 있습니다."),
+    BAD_SEQUENCE_DIRECTION(HttpStatus.BAD_REQUEST, "카드 순서는 previous/next로 바꿀 수 있습니다."),
     ILLEGAL_CHANGE_SAME_CARD(HttpStatus.BAD_REQUEST, "같은 카드에 대해서 순서를 바꿀 순 없습니다."),
 
     // 403
