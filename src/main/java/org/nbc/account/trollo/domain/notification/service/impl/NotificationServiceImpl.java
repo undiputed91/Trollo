@@ -69,8 +69,8 @@ public class NotificationServiceImpl implements NotifiactionService {
         }
     }
 
-    @Transactional
-    public void changeNotificationStatus(UserNotification unreadStatus) {
+
+    private void changeNotificationStatus(UserNotification unreadStatus) {
         unreadStatus.change();
     }
 }
