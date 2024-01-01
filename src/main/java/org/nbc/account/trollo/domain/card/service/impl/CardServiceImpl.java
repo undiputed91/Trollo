@@ -20,6 +20,8 @@ import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
+import org.nbc.account.trollo.domain.notification.entity.NotificationType;
+import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
@@ -31,6 +33,7 @@ import org.nbc.account.trollo.domain.userboard.exception.ForbiddenAccessBoardExc
 import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardException;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,8 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
+    private final ColumnRepository columnRepository;
+    private final ApplicationEventPublisher publisher;
     private final SectionRepository sectionRepository;
 
     @Override
@@ -82,6 +87,7 @@ public class CardServiceImpl implements CardService {
         createdCard = cardRepository.save(createdCard);
 
         lastCard.setNextCard(createdCard);
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.CREATED));
     }
 
     @Override
@@ -135,6 +141,9 @@ public class CardServiceImpl implements CardService {
             cardUpdateRequestDto.color(),
             cardUpdateRequestDto.deadline()
         );
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.UPDATED));
     }
 
     @Override
@@ -154,6 +163,9 @@ public class CardServiceImpl implements CardService {
         card.getNextCard().setPrevCard(prevCard);
 
         cardRepository.delete(card);
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.DELETED));
     }
 
     @Override
