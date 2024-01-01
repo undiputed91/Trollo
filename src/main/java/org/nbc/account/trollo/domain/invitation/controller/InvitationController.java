@@ -1,8 +1,7 @@
 package org.nbc.account.trollo.domain.invitation.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.InvitationsRes;
 import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
@@ -36,10 +35,10 @@ public class InvitationController {
 
   // view invitations I got
   @GetMapping("/invitations")
-  public ApiResponse<List<InvitationRes>> getInvitations(
+  public ApiResponse<InvitationsRes> getInvitations(
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은 초대 조회",
+    return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은/보낸 초대 조회",
         invitationService.getInvitations(userDetails.getUser()));
   }
 
@@ -48,7 +47,8 @@ public class InvitationController {
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @PathVariable(name = "boardId") Long boardId) {
 
-    return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공",invitationService.approveInvitation(boardId, userDetails.getUser()));
+    return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공",
+        invitationService.approveInvitation(boardId, userDetails.getUser()));
   }
 
   @PutMapping("/boards/{boardId}/reject")
