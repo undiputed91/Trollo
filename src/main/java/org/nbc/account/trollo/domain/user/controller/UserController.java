@@ -3,7 +3,6 @@ package org.nbc.account.trollo.domain.user.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.nbc.account.trollo.domain.comment.entity.CommentEntity;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.service.UserService;
