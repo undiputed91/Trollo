@@ -26,6 +26,8 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS_BOARD(HttpStatus.FORBIDDEN, "해당 보드에 접근할 수 없습니다."),
     FORBIDDEN_CHANGE_CARD(HttpStatus.FORBIDDEN, "같은 보드에 속한 카드끼리만 순서를 바꿀 수 있습니다."),
 
+    FORBIDDEN_ACCESS_BOARDCHANGE(HttpStatus.FORBIDDEN, "보드를 수정할 권한이 없습니다."),
+
     // 404
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾지 못하였습니다."),
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "보드를 찾지 못하였습니다."),

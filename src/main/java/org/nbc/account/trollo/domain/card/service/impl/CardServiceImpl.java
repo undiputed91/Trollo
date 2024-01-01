@@ -23,7 +23,7 @@ import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
-import org.nbc.account.trollo.domain.section.repository.ColumnRepository;
+import org.nbc.account.trollo.domain.section.repository.SectionRepository;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
@@ -41,7 +41,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
-    private final ColumnRepository columnRepository;
+    private final SectionRepository sectionRepository;
 
     @Override
     @Transactional
@@ -55,7 +55,7 @@ public class CardServiceImpl implements CardService {
         checkUserInBoard(boardId, user.getId());
 
         // 해당 보드에 색션이 있는지 찾는다.
-        Section section = columnRepository.findById(sectionId)
+        Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         if (!section.getBoard().getId().equals(board.getId())) {
             throw new NotFoundSectionInBoardException(ErrorCode.NOT_FOUND_SECTION_IN_BOARD);
@@ -110,7 +110,7 @@ public class CardServiceImpl implements CardService {
     @Transactional(readOnly = true)
     public List<CardAllReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
-        Section section = columnRepository.findById(sectionId)
+        Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         checkUserInBoard(section.getBoard().getId(), user.getId());
 
