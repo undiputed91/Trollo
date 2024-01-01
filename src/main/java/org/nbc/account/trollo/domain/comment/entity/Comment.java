@@ -12,29 +12,27 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.global.entity.BaseEntity;
 
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 @Table(name = "TB_COMMENT")
-public class CommentEntity extends BaseEntity {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
     private String content;
-
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @Builder
-    public CommentEntity(String content, User user) {
-        this.content = content;
-        this.user = user;
-    }
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
 }
