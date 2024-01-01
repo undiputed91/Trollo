@@ -21,3 +21,4 @@ public interface UserBoardRepository extends JpaRepository<UserBoard, UserBoardI
 
     void deleteByUserAndBoard(User user, Board board);
 }
+

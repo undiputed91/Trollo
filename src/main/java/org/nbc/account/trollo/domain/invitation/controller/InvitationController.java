@@ -51,4 +51,13 @@ public class InvitationController {
     return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공",invitationService.approveInvitation(boardId, userDetails.getUser()));
   }
 
+  @PutMapping("/boards/{boardId}/reject")
+  public ApiResponse<Void> rejectInvitation(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      @PathVariable(name = "boardId") Long boardId) {
+
+    invitationService.rejectInvitation(boardId, userDetails.getUser());
+    return new ApiResponse<>(HttpStatus.OK.value(), "초대 거절 성공");
+  }
+
 }

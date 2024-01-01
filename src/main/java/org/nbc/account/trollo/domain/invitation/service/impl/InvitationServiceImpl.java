@@ -68,22 +68,27 @@ public class InvitationServiceImpl implements InvitationService {
 
     Board board = getBoardById(boardId);
 
-    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
-        .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
-
-    //if the user is not waiting but a participant or a creator of the board
-    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
-      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
-    }
+    UserBoard userBoard = getInvitation(user, board);
 
     //delete existing User and Board relation (invitation) to not use @Setter in UserBoard Entity
-    userBoardRepository.deleteByUserAndBoard(user, board);
+    userBoardRepository.delete(userBoard);
+
     //save new User and Board relation which means the person is a participant of the board
     UserBoard newUserBoard = new UserBoard(user, board, UserBoardRole.PARTICIPANT);
     userBoardRepository.save(newUserBoard);
 
     return new UserBoardRes(newUserBoard.getUser().getEmail(), newUserBoard.getBoard().getId(),
         newUserBoard.getRole());
+
+  }
+
+  @Transactional
+  @Override
+  public void rejectInvitation(Long boardId, User user) {
+
+    Board board = getBoardById(boardId);
+    UserBoard userBoard = getInvitation(user, board);
+    userBoardRepository.delete(userBoard);
 
   }
 
@@ -122,6 +127,18 @@ public class InvitationServiceImpl implements InvitationService {
     if (userBoard.getRole().equals(UserBoardRole.WAITING)) {
       throw new InvitationDomainException(ErrorCode.ONLY_PARTICIPANTS_CAN_INVITE);
     }
+  }
+
+  private UserBoard getInvitation(User user, Board board) {
+    UserBoard userBoard = userBoardRepository.findUserBoardByUserAndBoard(user, board)
+        .orElseThrow(() -> new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
+
+    //if the user is not waiting but a participant or a creator of the board
+    if (!userBoard.getRole().equals(UserBoardRole.WAITING)) {
+      throw new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION);
+    }
+
+    return userBoard;
   }
 
 }
