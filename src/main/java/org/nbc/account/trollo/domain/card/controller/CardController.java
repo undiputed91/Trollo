@@ -2,6 +2,7 @@ package org.nbc.account.trollo.domain.card.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
@@ -78,6 +79,16 @@ public class CardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(cardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 삭제");
+    }
+
+    @PutMapping("/cards/{fromCardId}/to/{toCardId}/{direction}")
+    public ApiResponse<Void> updateCardSequence(
+        @PathVariable Long fromCardId,
+        @PathVariable Long toCardId,
+        @PathVariable CardSequenceDirection direction,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.updateCardSequence(fromCardId, toCardId, direction, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "카드 위치 변경");
     }
 
 }
