@@ -21,12 +21,14 @@ public enum ErrorCode {
 
     // 403
     FORBIDDEN_ACCESS_CARD(HttpStatus.FORBIDDEN, "해당 카드에 접근할 수 없습니다."),
+    FORBIDDEN_ACCESS_BOARD(HttpStatus.FORBIDDEN, "해당 보드에 접근할 수 없습니다."),
 
     // 404
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾지 못하였습니다."),
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "보드를 찾지 못하였습니다."),
     NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "댓글을 찾지 못하였습니다."),
     NOT_FOUND_EMAIL(HttpStatus.NOT_FOUND, "이메일을 찾지 못하였습니다."),
+    NOT_FOUND_CHECKLIST(HttpStatus.NOT_FOUND, "체크리스트를 찾지 못하였습니다."),
     NOT_FOUND_USER_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 유저입니다."),
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "색션을 찾지 못하였습니다."),
     NOT_FOUND_SECTION_IN_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 색션입니다."),

@@ -12,7 +12,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserBoardRepository extends JpaRepository<UserBoard, UserBoardId> {
 
     boolean existsByBoardIdAndUserId(Long boardId, Long userId);
+
+    Optional<UserBoard> findByBoardIdAndUserId(Long id, Long id1);
+
     Optional<UserBoard> findUserBoardByUserAndBoard(User user, Board board);
+
     Optional<List<UserBoard>> findAllByUserAndRoleEquals(User user, UserBoardRole userBoardRole);
 
+    void deleteByUserAndBoard(User user, Board board);
 }
+
