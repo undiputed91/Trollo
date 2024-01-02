@@ -1,6 +1,7 @@
 package org.nbc.account.trollo.domain.checklist.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.nbc.account.trollo.domain.checklist.dto.request.CheckListCreateRequestDto;
 import org.nbc.account.trollo.domain.checklist.dto.request.CheckListRequestDto;
 import org.nbc.account.trollo.domain.checklist.service.CheckListService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
@@ -25,7 +26,7 @@ public class CheckListController {
     @PostMapping("/{cardId}/checklists")
     public ApiResponse<Void> createList(
         @PathVariable Long cardId,
-        @RequestBody CheckListRequestDto requestDto,
+        @RequestBody CheckListCreateRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         checkListService.createList(cardId, requestDto, userDetails);
         return new ApiResponse<>(HttpStatus.CREATED.value(), "체크리스트 생성");
