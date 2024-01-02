@@ -14,4 +14,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Optional<Card> findBySectionIdAndNextCardIsNull(Long sectionId);
 
     boolean existsBySectionId(Long sectionId);
+  
+    Card findCardById(Long cardId);
 }
