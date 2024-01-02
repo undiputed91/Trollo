@@ -6,6 +6,7 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenAccessBoardException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
+import org.nbc.account.trollo.domain.checklist.dto.request.CheckListCreateRequestDto;
 import org.nbc.account.trollo.domain.checklist.dto.request.CheckListRequestDto;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.checklist.exception.NotFoundCheckListException;
@@ -29,10 +30,9 @@ public class CheckListServiceImpl implements CheckListService {
     private final UserBoardRepository userBoardRepository;
 
     @Override
-    public void createList(Long cardId, CheckListRequestDto requestDto,
+    public void createList(Long cardId, CheckListCreateRequestDto requestDto,
         UserDetailsImpl userDetails) {
         String description = requestDto.description();
-        boolean checkSign = requestDto.checkSign();
         User loginUser = userDetails.getUser();
 
         Card card = cardRepository.findById(cardId)
@@ -45,7 +45,6 @@ public class CheckListServiceImpl implements CheckListService {
         CheckList checkList = CheckList.builder()
             .card(card)
             .description(description)
-            .checkSign(checkSign)
             .build();
 
         checkListRepository.save(checkList);
