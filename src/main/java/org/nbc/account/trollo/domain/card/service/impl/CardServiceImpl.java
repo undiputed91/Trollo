@@ -205,6 +205,9 @@ public class CardServiceImpl implements CardService {
         }
 
         fromCard.changeSequence(toCard, direction);
+
+        Board board = toCard.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.MOVED));
     }
 
     @Override
@@ -231,6 +234,9 @@ public class CardServiceImpl implements CardService {
         }
 
         card.changeSection(section);
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.MOVED));
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {
