@@ -68,6 +68,7 @@ public class BoardServiceImpl implements BoardService {
         if (!userBoard.getRole().equals(UserBoardRole.CREATOR)) {
             throw new NotFoundBoardException(ErrorCode.FORBIDDEN_ACCESS_BOARDCHANGE);
         }
+        userBoardRepository.delete(userBoard);
         boardRepository.delete(board);
 
     }

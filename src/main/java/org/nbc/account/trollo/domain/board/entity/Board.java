@@ -5,11 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.global.entity.BaseEntity;
 
 @Getter
@@ -26,6 +30,9 @@ public class Board extends BaseEntity {
     private String name;
 
     private String color;
+
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private final List<Section> section= new ArrayList<>();
 
     @Builder
     public Board(final String name, final String color) {
