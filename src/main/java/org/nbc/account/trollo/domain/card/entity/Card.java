@@ -54,10 +54,10 @@ public class Card {
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
     private final List<CheckList> checkList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
     private final List<Comment> comments = new ArrayList<>();
 
     @Builder
