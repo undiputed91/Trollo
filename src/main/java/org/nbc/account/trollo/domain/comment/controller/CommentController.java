@@ -1,19 +1,14 @@
 package org.nbc.account.trollo.domain.comment.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.nbc.account.trollo.domain.comment.dto.req.CommentGetUserReq;
 import org.nbc.account.trollo.domain.comment.dto.req.CommentSaveReq;
 import org.nbc.account.trollo.domain.comment.dto.req.CommentUpdateReq;
-import org.nbc.account.trollo.domain.comment.dto.res.CommentGetCardRes;
-import org.nbc.account.trollo.domain.comment.dto.res.CommentGetUserRes;
 import org.nbc.account.trollo.domain.comment.service.CommentService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,19 +48,4 @@ public class CommentController {
         commentService.updateComment(req, commentId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "update_comment");
     }
-
-    @GetMapping
-    public ApiResponse<List<CommentGetUserRes>> getComments(
-        @RequestBody CommentGetUserReq req) {
-        return new ApiResponse<>(HttpStatus.OK.value(),
-            "User_Get_Comment",
-            commentService.findUserComment(req));
-    }
-
-    @GetMapping("/{cardId}/comments")
-    public ApiResponse<List<CommentGetCardRes>> getCardComment(@PathVariable Long cardId) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Card_Get_Comment",
-            commentService.findCardComment(cardId));
-    }
-
 }
