@@ -14,6 +14,7 @@ import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -74,6 +75,15 @@ public class UserController {
 
         userService.updatePassword(updateReq, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "비밀번호 업데이트");
+    }
+
+    //delete my account
+    @DeleteMapping("/withdraw")
+    public ApiResponse<Void> deleteAccount(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.deleteAccount(userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "회원 탈퇴 성공");
     }
 
 }
