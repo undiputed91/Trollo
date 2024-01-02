@@ -5,12 +5,12 @@ import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.springframework.core.convert.converter.Converter;
 
 public class StringToCardSequenceDirectionConverter implements
-    Converter<String, CardSequenceDirection> {
+    Converter<String, SequenceDirection> {
 
     @Override
-    public CardSequenceDirection convert(final String source) {
+    public SequenceDirection convert(final String source) {
         try {
-            return CardSequenceDirection.valueOf(source.toUpperCase());
+            return SequenceDirection.valueOf(source.toUpperCase());
         } catch (Exception e) {
             throw new BadCardSequenceDirectionRequestException(ErrorCode.BAD_SEQUENCE_DIRECTION);
         }

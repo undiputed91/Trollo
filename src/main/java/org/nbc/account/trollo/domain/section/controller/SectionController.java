@@ -1,6 +1,7 @@
 package org.nbc.account.trollo.domain.section.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.section.dto.SectionCreateRequestDto;
 import org.nbc.account.trollo.domain.section.service.SectionService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
@@ -28,7 +29,7 @@ public class SectionController {
         @RequestBody SectionCreateRequestDto sectionCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         sectionService.createSection(boardId, sectionCreateRequestDto, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "컬럼 생성");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "색션 생성");
     }
 
     @PutMapping("/sections/{sectionId}")
@@ -37,7 +38,18 @@ public class SectionController {
         @RequestBody SectionCreateRequestDto sectionCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         sectionService.updateSection(sectionId, sectionCreateRequestDto, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "컬럼 이름 수정");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "색션 이름 수정");
+    }
+
+    @PutMapping("/sections/{fromSectionId}/to/{toSectionId}/{direction}")
+    public ApiResponse<Void> changeCardSequence(
+        @PathVariable Long fromSectionId,
+        @PathVariable Long toSectionId,
+        @PathVariable SequenceDirection direction,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        sectionService.changeSectionSequence(fromSectionId, toSectionId, direction,
+            userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "색션 위치 변경");
     }
 
     @DeleteMapping("/sections/{sectionId}")
@@ -45,7 +57,7 @@ public class SectionController {
         @PathVariable Long sectionId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         sectionService.deleteSection(sectionId, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "컬럼 삭제");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "색션 삭제");
     }
 
 

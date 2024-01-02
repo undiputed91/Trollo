@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,6 +54,36 @@ public class Section {
 
     public void setPrevSection(Section section) {
         this.prevSection = section;
+    }
+
+    public void changeSequence(final Section toSection, final SequenceDirection direction) {
+        if (prevSection != null) {
+            prevSection.setNextSection(nextSection);
+        }
+        if (nextSection != null) {
+            nextSection.setPrevSection(prevSection);
+        }
+
+        switch (direction) {
+            case PREVIOUS:
+                Section toSectionPrevSection = toSection.getPrevSection();
+                if (toSectionPrevSection != null) {
+                    toSectionPrevSection.setNextSection(this);
+                }
+                toSection.setPrevSection(this);
+                this.setNextSection(toSection);
+                this.setPrevSection(toSectionPrevSection);
+                break;
+            case NEXT:
+                Section toSectionNextSection = toSection.getNextSection();
+                if (toSectionNextSection != null) {
+                    toSectionNextSection.setPrevSection(this);
+                }
+                toSection.setNextSection(this);
+                this.setPrevSection(toSection);
+                this.setNextSection(toSectionNextSection);
+                break;
+        }
     }
 
     public void update(String name) {
