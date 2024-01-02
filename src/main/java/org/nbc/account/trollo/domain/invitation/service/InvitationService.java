@@ -14,4 +14,6 @@ public interface InvitationService {
 
     void rejectInvitation(Long boardId, User user);
 
+    void cancelInvitation(Long boardId, Long userId, User user);
+
 }
