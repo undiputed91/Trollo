@@ -101,18 +101,18 @@ public class CardServiceImpl implements CardService {
         Board board = card.getSection().getBoard();
         checkUserInBoard(board.getId(), user.getId());
 
-        long rate = getRate(card.getCheckList());
+        float rate = getRate(card.getCheckList());
 
         return CardMapper.INSTANCE.toCardReadResponseDto(card, rate);
     }
 
-    private long getRate(final List<CheckList> checkList) {
+    private float getRate(final List<CheckList> checkList) {
         int checkListCount = checkList.size();
         long checkListSignCount = checkList
             .stream()
             .filter(CheckList::isCheckSign)
             .count();
-        return (checkListSignCount / checkListCount) * 100;
+        return ((float) checkListSignCount / checkListCount) * 100;
     }
 
     @Override

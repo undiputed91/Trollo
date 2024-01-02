@@ -13,7 +13,7 @@ public record CardReadResponseDto(
     String color,
     LocalDateTime deadline,
     List<CheckListRequestDto> checkList,
-    Long rate
+    Float rate
 ) {
 
 }

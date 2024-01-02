@@ -14,7 +14,7 @@ public interface CardMapper {
 
     CardMapper INSTANCE = Mappers.getMapper(CardMapper.class);
 
-    CardReadResponseDto toCardReadResponseDto(Card card, Long rate);
+    CardReadResponseDto toCardReadResponseDto(Card card, Float rate);
 
     CardAllReadResponseDto toCardAllReadResponseDto(Card card);
 
