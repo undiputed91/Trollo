@@ -1,14 +1,12 @@
 package org.nbc.account.trollo.domain.comment.service.impl;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
-import org.nbc.account.trollo.domain.comment.dto.req.CommentGetUserReq;
 import org.nbc.account.trollo.domain.comment.dto.req.CommentSaveReq;
 import org.nbc.account.trollo.domain.comment.dto.req.CommentUpdateReq;
-import org.nbc.account.trollo.domain.comment.dto.res.CommentGetUserRes;
 import org.nbc.account.trollo.domain.comment.dto.res.CommentSaveRes;
 import org.nbc.account.trollo.domain.comment.dto.res.CommentUpdateRes;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
@@ -16,10 +14,13 @@ import org.nbc.account.trollo.domain.comment.exception.CommentDomainException;
 import org.nbc.account.trollo.domain.comment.mapper.CommentServiceMapper;
 import org.nbc.account.trollo.domain.comment.repository.CommentRepository;
 import org.nbc.account.trollo.domain.comment.service.CommentService;
+import org.nbc.account.trollo.domain.notification.entity.NotificationType;
+import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
     private final UserBoardRepository userBoardRepository;
+    private final ApplicationEventPublisher publisher;
 
     public CommentSaveRes saveComment(CommentSaveReq req, Long cardId, User user) {
         Card card = cardRepository.findCardById(cardId);
@@ -38,6 +40,10 @@ public class CommentServiceImpl implements CommentService {
         if (userBoard == null) {
             throw new CommentDomainException(ErrorCode.NOT_FOUND_USER_BOARD);
         }
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.ADD_COMMENTS));
+
         return CommentServiceMapper.INSTANCE.toCommentSaveRes(
             commentRepository.save(Comment.builder()
                 .content(req.content())
@@ -91,10 +97,5 @@ public class CommentServiceImpl implements CommentService {
         } else {
             return true;
         }
-    }
-
-    public List<CommentGetUserRes> findUserComment(CommentGetUserReq req) {
-        return CommentServiceMapper.INSTANCE.toCommentGetResUserList(
-            commentRepository.findByUserNickname(req.nickname()));
     }
 }

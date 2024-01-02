@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,17 +11,19 @@ import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
-import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceException;
 import org.nbc.account.trollo.domain.card.exception.IllegalChangeSameCardException;
 import org.nbc.account.trollo.domain.card.exception.IllegalMoveToSectionException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
+import org.nbc.account.trollo.domain.card.exception.NotFoundFirstCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
+import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.notification.entity.NotificationType;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -92,7 +95,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public CardReadResponseDto getCard(final Long cardId, final User user) {
+    public CardReadDetailResponseDto getCard(final Long cardId, final User user) {
         // 해당 카드가 있는 보드에 사용자가 속하는지 확인한다.
         Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
@@ -100,11 +103,22 @@ public class CardServiceImpl implements CardService {
         Board board = card.getSection().getBoard();
         checkUserInBoard(board.getId(), user.getId());
 
-        return CardMapper.INSTANCE.toCardReadResponseDto(card);
+        float rate = getRate(card.getCheckList());
+
+        return CardMapper.INSTANCE.toCardReadResponseDto(card, rate);
+    }
+
+    private float getRate(final List<CheckList> checkList) {
+        int checkListCount = checkList.size();
+        long checkListSignCount = checkList
+            .stream()
+            .filter(CheckList::isCheckSign)
+            .count();
+        return ((float) checkListSignCount / checkListCount) * 100;
     }
 
     @Override
-    public List<CardAllReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
+    public List<CardReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
         // 해당 보드에 사용자가 속하는지 확인한다.
         checkUserInBoard(boardId, user.getId());
 
@@ -114,14 +128,32 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CardAllReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
+    public List<CardReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
         checkUserInBoard(section.getBoard().getId(), user.getId());
 
         List<Card> cards = cardRepository.findAllBySectionId(sectionId);
-        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
+        List<Card> sortedCards = sortCards(cards);
+
+        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(sortedCards);
+    }
+
+    private List<Card> sortCards(final List<Card> cards) {
+        List<Card> result = new ArrayList<>();
+
+        Card card = cards.stream()
+            .filter(c -> c.getPrevCard() == null)
+            .findFirst()
+            .orElseThrow(() -> new NotFoundFirstCardException(ErrorCode.NOT_FOUND_CARD));
+
+        while (card != null) {
+            result.add(card);
+            card = card.getNextCard();
+        }
+
+        return result;
     }
 
     @Override
@@ -159,9 +191,13 @@ public class CardServiceImpl implements CardService {
         // 카드 삭제 시, 이전 카드와 다음 카드의 순서를 재설정한다.
         Card prevCard = card.getPrevCard();
         Card nextCard = card.getNextCard();
-        card.getPrevCard().setNextCard(nextCard);
-        card.getNextCard().setPrevCard(prevCard);
 
+        if (prevCard != null) {
+            prevCard.setNextCard(nextCard);
+        }
+        if (nextCard != null) {
+            nextCard.setPrevCard(prevCard);
+        }
         cardRepository.delete(card);
 
         Board board = card.getSection().getBoard();
@@ -193,6 +229,9 @@ public class CardServiceImpl implements CardService {
         }
 
         fromCard.changeSequence(toCard, direction);
+
+        Board board = toCard.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.MOVED));
     }
 
     @Override
@@ -210,15 +249,18 @@ public class CardServiceImpl implements CardService {
         Long boardIdBySection = section.getBoard().getId();
         checkUserInBoard(boardIdBySection, user.getId());
 
-        if(!Objects.equals(boardIdByCard, boardIdBySection)){
+        if (!Objects.equals(boardIdByCard, boardIdBySection)) {
             throw new ForbiddenChangeCardSequenceException(ErrorCode.FORBIDDEN_CHANGE_CARD);
         }
 
-        if(cardRepository.existsBySectionId(sectionId)){
+        if (cardRepository.existsBySectionId(sectionId)) {
             throw new IllegalMoveToSectionException(ErrorCode.ILLEGAL_MOVE_TO_SECTION);
         }
 
         card.changeSection(section);
+
+        Board board = card.getSection().getBoard();
+        publisher.publishEvent(new CardEvent(board, user, NotificationType.MOVED));
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {

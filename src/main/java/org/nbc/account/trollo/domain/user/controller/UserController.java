@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
+import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
@@ -13,6 +14,7 @@ import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -63,6 +65,25 @@ public class UserController {
 
         userService.updateInfo(updateReq, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "개인정보 업데이트");
+    }
+
+    //update password
+    @PutMapping("/pw")
+    public ApiResponse<Void> updatePassword(
+        @Valid @RequestBody PasswordUpdateReq updateReq,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.updatePassword(updateReq, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "비밀번호 업데이트");
+    }
+
+    //delete my account
+    @DeleteMapping("/withdraw")
+    public ApiResponse<Void> deleteAccount(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.deleteAccount(userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "회원 탈퇴 성공");
     }
 
 }

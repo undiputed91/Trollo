@@ -22,7 +22,7 @@ public class CheckListController {
 
     private final CheckListService checkListService;
 
-    @PostMapping("/{cardId}/checklist")
+    @PostMapping("/{cardId}/checklists")
     public ApiResponse<Void> createList(
         @PathVariable Long cardId,
         @RequestBody CheckListRequestDto requestDto,
@@ -31,7 +31,7 @@ public class CheckListController {
         return new ApiResponse<>(HttpStatus.CREATED.value(), "체크리스트 생성");
     }
 
-    @PutMapping("/{cardId}/checklist/{checkListId}")
+    @PutMapping("/{cardId}/checklists/{checkListId}")
     public ApiResponse<Void> updateCheckList(
         @PathVariable Long cardId,
         @PathVariable Long checkListId,
@@ -41,7 +41,7 @@ public class CheckListController {
         return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 수정");
     }
 
-    @DeleteMapping("/{cardId}/checklist/{checkListId}")
+    @DeleteMapping("/{cardId}/checklists/{checkListId}")
     public ApiResponse<Void> deleteCheckList(
         @PathVariable Long cardId,
         @PathVariable Long checkListId,

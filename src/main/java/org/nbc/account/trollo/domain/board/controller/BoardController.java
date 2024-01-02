@@ -25,13 +25,12 @@ public class BoardController {
 
     private final BoardService boardService;
 
-  @GetMapping //메인페이지(현재 사용자 보드 전체조회)
-  public ApiResponse<List<BoardListResponseDto>> mainBoard(
-      @AuthenticationPrincipal UserDetailsImpl userDetails){
-    List<BoardListResponseDto> responseDto = boardService.mainBoard(userDetails.getUser());
-    return new ApiResponse<>(HttpStatus.OK.value(), "메인 페이지", responseDto);
-
-  }
+    @GetMapping //메인페이지(현재 사용자 보드 전체조회) 유저정보를 사용할수 없어서 안됨.
+    public ApiResponse<List<BoardListResponseDto>> mainBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<BoardListResponseDto> responseDto = boardService.mainBoard(userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "메인 페이지", responseDto);
+    }
 
     @PostMapping//보드 생성
     public ApiResponse<Void> createBoard(
