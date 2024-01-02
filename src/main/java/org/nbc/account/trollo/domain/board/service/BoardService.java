@@ -6,7 +6,6 @@ import org.nbc.account.trollo.domain.board.dto.BoardRequestDto;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface BoardService {
 
     void createBoard(final BoardRequestDto boardRequestDto, User user);
