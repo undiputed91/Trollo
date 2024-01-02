@@ -3,7 +3,6 @@ package org.nbc.account.trollo.global.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class S3Provider {
         return metadata;
     }
 
-    private void createFolder(String folderName) {
+ /*   private void createFolder(String folderName) {
         if (!amazonS3.doesObjectExist(bucket, folderName)) {
             amazonS3.putObject(
                 bucket,
@@ -36,9 +35,9 @@ public class S3Provider {
                 new ByteArrayInputStream(new byte[0]),
                 new ObjectMetadata());
         }
-    }
+    }*/
 
-    public String saveFile(MultipartFile multipartFile, String folderName) throws IOException {
+    public String saveFile(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -46,9 +45,8 @@ public class S3Provider {
         // S3에 저장 시 파일이름은 UUID와 파일명을 합하여 저장해야합니다.
         // 1. 파일명이 중복될수도 있디.
         // 2. 보안적인 이유
-        originalFilename = folderName + SEPARATOR + UUID.randomUUID() + originalFilename.substring(
+        originalFilename = UUID.randomUUID() + originalFilename.substring(
             originalFilename.lastIndexOf("."));
-        createFolder(folderName);
 
         ObjectMetadata metadata = setObjectMetadata(multipartFile);
 
