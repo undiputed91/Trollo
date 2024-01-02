@@ -1,5 +1,8 @@
 package org.nbc.account.trollo.domain.user.service.impl;
 
+import static org.nbc.account.trollo.global.jwt.JwtUtil.AUTHORIZATION_HEADER;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
@@ -67,11 +70,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MyPageRes mypage(User user) {
-        return new MyPageRes(user.getEmail(),user.getNickname());
+        return new MyPageRes(user.getEmail(), user.getNickname());
     }
 
     @Override
-    public void updateInfo(UserInfoUpdateReq updateReq ,User user) {
+    public void updateInfo(UserInfoUpdateReq updateReq, User user) {
 
         String nickname = updateReq.nickname();
         String password = updateReq.password();
@@ -110,6 +113,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAccount(User user) {
         userRepository.delete(user);
+    }
+
+    @Override
+    public void logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+
     }
 
 }

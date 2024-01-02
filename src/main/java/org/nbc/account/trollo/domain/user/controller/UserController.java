@@ -13,7 +13,6 @@ import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,6 +83,16 @@ public class UserController {
 
         userService.deleteAccount(userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "회원 탈퇴 성공");
+    }
+
+    //log out
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        HttpServletResponse response) {
+
+        userService.logout(response);
+        return new ApiResponse<>(HttpStatus.OK.value(), "로그아웃 성공");
     }
 
 }
