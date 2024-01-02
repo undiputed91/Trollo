@@ -17,6 +17,8 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.user.entity.User;
@@ -44,16 +46,14 @@ public class Notification {
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "notification", orphanRemoval = true)
-    private final List<UserNotification> userNotification= new ArrayList<>();
-
 
     public Notification(CardEvent event) {
         this.fieldName = event.notificationType();
