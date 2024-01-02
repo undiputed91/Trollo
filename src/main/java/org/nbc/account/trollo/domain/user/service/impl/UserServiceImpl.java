@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void updateInfo(UserInfoUpdateReq updateReq ,User user) {
 
         String nickname = updateReq.nickname();
@@ -85,6 +84,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.updateNickname(nickname);
+        userRepository.save(user);
     }
 
     @Override
