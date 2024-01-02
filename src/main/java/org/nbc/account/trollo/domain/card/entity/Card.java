@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.card.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -51,7 +52,7 @@ public class Card {
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card",cascade = CascadeType.PERSIST,orphanRemoval = true)
     private final List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
