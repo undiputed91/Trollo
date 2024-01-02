@@ -1,6 +1,9 @@
 package org.nbc.account.trollo.global.exception;
 
+import java.util.List;
 import org.nbc.account.trollo.global.dto.ApiResponse;
+import org.nbc.account.trollo.global.dto.BeanValidationErrorResponseDto;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,10 +18,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiResponse<?> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException ex) {
+    public ApiResponse<List<BeanValidationErrorResponseDto>> handleMethodArgumentNotValidException(
+        BindingResult bindingResult) {
         ErrorCode errorCode = ErrorCode.BAD_FORM;
-        return new ApiResponse<>(errorCode.getHttpStatus().value(), errorCode.getMessage());
+        List<BeanValidationErrorResponseDto> responseDto = bindingResult.getFieldErrors().stream()
+            .map(BeanValidationErrorResponseDto::new)
+            .toList();
+        return new ApiResponse<>(errorCode.getHttpStatus().value(), "잘못된 입력값", responseDto);
     }
 
 }
