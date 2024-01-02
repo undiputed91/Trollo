@@ -4,10 +4,9 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
-import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
 import org.nbc.account.trollo.domain.comment.dto.res.CommentReadResponseDto;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
 
@@ -19,9 +18,9 @@ public interface CardMapper {
     @Mapping(source = "user.nickname", target = "nickname")
     CommentReadResponseDto toCommentResponseDto(Comment comment);
 
-    CardReadResponseDto toCardReadResponseDto(Card card, Float rate);
+    CardReadDetailResponseDto toCardReadResponseDto(Card card, Float rate);
 
-    CardAllReadResponseDto toCardAllReadResponseDto(Card card);
+    CardReadResponseDto toCardAllReadResponseDto(Card card);
 
-    List<CardAllReadResponseDto> toCardAllReadResponseDtoList(List<Card> card);
+    List<CardReadResponseDto> toCardAllReadResponseDtoList(List<Card> card);
 }
