@@ -1,7 +1,6 @@
 package org.nbc.account.trollo.domain.user.service.impl;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
@@ -16,7 +15,6 @@ import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.nbc.account.trollo.global.jwt.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 @RequiredArgsConstructor
 @Service
@@ -88,7 +86,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void updatePassword(PasswordUpdateReq updateReq, User user) {
 
         String password = updateReq.password();
