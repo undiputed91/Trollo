@@ -9,14 +9,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
+import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
+import org.nbc.account.trollo.domain.usernotification.entity.UserNotification;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,6 +50,10 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "notification", orphanRemoval = true)
+    private final List<UserNotification> userNotification= new ArrayList<>();
+
 
     public Notification(CardEvent event) {
         this.fieldName = event.notificationType();
