@@ -107,4 +107,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void deleteAccount(User user) {
+        userRepository.delete(user);
+    }
+
 }

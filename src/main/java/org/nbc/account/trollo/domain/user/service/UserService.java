@@ -20,4 +20,6 @@ public interface UserService {
 
     void updatePassword(PasswordUpdateReq updateReq, User user);
 
+    void deleteAccount(User user);
+
 }
