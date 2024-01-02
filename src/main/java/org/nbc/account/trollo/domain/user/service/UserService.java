@@ -22,6 +22,6 @@ public interface UserService {
 
     void deleteAccount(User user);
 
-    void logout(User user, HttpServletResponse response);
+    void logout(HttpServletResponse response);
 
 }

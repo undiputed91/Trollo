@@ -91,7 +91,7 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         HttpServletResponse response) {
 
-        userService.logout(userDetails.getUser(), response);
+        userService.logout(response);
         return new ApiResponse<>(HttpStatus.OK.value(), "로그아웃 성공");
     }
 

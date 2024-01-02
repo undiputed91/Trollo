@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(User user, HttpServletResponse response) {
+    public void logout(HttpServletResponse response) {
 
         Cookie cookie = new Cookie(AUTHORIZATION_HEADER, "");
         cookie.setPath("/");
