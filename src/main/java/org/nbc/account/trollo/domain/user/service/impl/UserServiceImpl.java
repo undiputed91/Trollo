@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.updatePassword(newPassword);
+        userRepository.save(user);
 
     }
 
