@@ -146,7 +146,7 @@ public class CardServiceImpl implements CardService {
         Card card = cards.stream()
             .filter(c -> c.getPrevCard() == null)
             .findFirst()
-            .orElseThrow(() -> new NotFoundFirstCardException(ErrorCode.NOT_FOUND_CARD));
+            .orElse(null);
 
         while (card != null) {
             result.add(card);

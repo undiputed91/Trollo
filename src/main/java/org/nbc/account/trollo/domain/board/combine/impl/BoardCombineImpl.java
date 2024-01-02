@@ -57,7 +57,7 @@ public class BoardCombineImpl implements BoardCombine {
         Section section = sections.stream()
             .filter(s -> s.getPrevSection() == null)
             .findFirst()
-            .orElseThrow(() -> new NotFoundFirstSectionException(ErrorCode.NOT_FOUND_SECTION));
+            .orElse(null);
 
         while (section != null) {
             result.add(section);
