@@ -100,4 +100,22 @@ public class CardController {
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 위치 변경");
     }
 
+    @PostMapping("/cards/{cardId}/workers/{workerId}")
+    public ApiResponse<Void> addWorker(
+        @PathVariable Long cardId,
+        @PathVariable Long workerId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.addWorker(cardId, workerId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "작업자 추가");
+    }
+
+    @DeleteMapping("/cards/{cardId}/workers/{workerId}")
+    public ApiResponse<Void> removeWorker(
+        @PathVariable Long cardId,
+        @PathVariable Long workerId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.removeWorker(cardId, workerId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "작업자 삭제");
+    }
+
 }

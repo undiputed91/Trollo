@@ -23,6 +23,7 @@ import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
 import org.nbc.account.trollo.domain.section.entity.Section;
+import org.nbc.account.trollo.domain.worker.entity.Worker;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -63,6 +64,9 @@ public class Card {
 
     @OneToMany(mappedBy = "card")
     private final List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card")
+    private final List<Worker> workers = new ArrayList<>();
 
     @Builder
     public Card(final String title, final String content, final String color,
