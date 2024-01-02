@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.nbc.account.trollo.domain.notification.entity.Notification;
 import org.nbc.account.trollo.domain.section.entity.Section;
 import org.nbc.account.trollo.global.entity.BaseEntity;
 
@@ -33,6 +34,9 @@ public class Board extends BaseEntity {
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
     private final List<Section> section= new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private final List<Notification> notifications= new ArrayList<>();
 
     @Builder
     public Board(final String name, final String color) {
