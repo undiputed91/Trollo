@@ -6,13 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
+import org.nbc.account.trollo.domain.card.entity.Card;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +34,9 @@ public class Section {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @OneToMany(mappedBy = "section", orphanRemoval = true)
+    private final List<Card> card = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "prev_section_id")
     private Section prevSection;
@@ -46,7 +53,6 @@ public class Section {
         this.prevSection = prevSection;
         this.nextSection = nextSection;
     }
-
 
     public void setNextSection(Section section) {
         this.nextSection = section;

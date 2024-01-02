@@ -56,7 +56,7 @@ public class Card {
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
     private final List<CheckList> checkList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<Comment> comments = new ArrayList<>();
 
     @Builder
