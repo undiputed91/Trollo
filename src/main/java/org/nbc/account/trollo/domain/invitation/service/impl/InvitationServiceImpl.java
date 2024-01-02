@@ -103,17 +103,24 @@ public class InvitationServiceImpl implements InvitationService {
 
     }
 
-    private User getReceiverById(Long userId, User user) {
+    private User getUserById(Long userId){
 
-        User guest = userRepository.findById(userId).orElseThrow(() ->
+        User user = userRepository.findById(userId).orElseThrow(() ->
             new InvitationDomainException(ErrorCode.NOT_FOUND_USER));
 
+        return user;
+    }
+
+    private User getReceiverById(Long userId, User user) {
+
+        User receiver = getUserById(Long userId);
+
         //can't invite oneself
-        if (guest.getId().equals(user.getId())) {
+        if (receiver.getId().equals(user.getId())) {
             throw new InvitationDomainException(ErrorCode.SELF_CANNOT_BE_INVITED);
         }
 
-        return guest;
+        return receiver;
 
     }
 
