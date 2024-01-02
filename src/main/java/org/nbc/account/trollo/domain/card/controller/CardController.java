@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
-import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.service.CardService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
@@ -39,27 +39,27 @@ public class CardController {
     }
 
     @GetMapping("/cards/{cardId}")
-    public ApiResponse<CardReadResponseDto> getCard(
+    public ApiResponse<CardReadDetailResponseDto> getCard(
         @PathVariable Long cardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CardReadResponseDto responseDto = cardService.getCard(cardId, userDetails.getUser());
+        CardReadDetailResponseDto responseDto = cardService.getCard(cardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
 
     @GetMapping("/boards/{boardId}/cards")
-    public ApiResponse<List<CardAllReadResponseDto>> getCardsByBoard(
+    public ApiResponse<List<CardReadResponseDto>> getCardsByBoard(
         @PathVariable Long boardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<CardAllReadResponseDto> responseDto = cardService.getCardAllByBoard(boardId,
+        List<CardReadResponseDto> responseDto = cardService.getCardAllByBoard(boardId,
             userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }
 
     @GetMapping("/sections/{sectionId}/cards")
-    public ApiResponse<List<CardAllReadResponseDto>> getCardsBySection(
+    public ApiResponse<List<CardReadResponseDto>> getCardsBySection(
         @PathVariable Long sectionId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<CardAllReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId,
+        List<CardReadResponseDto> responseDto = cardService.getCardAllBySection(sectionId,
             userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 조회", responseDto);
     }

@@ -11,8 +11,8 @@ import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
-import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceException;
@@ -95,7 +95,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public CardReadResponseDto getCard(final Long cardId, final User user) {
+    public CardReadDetailResponseDto getCard(final Long cardId, final User user) {
         // 해당 카드가 있는 보드에 사용자가 속하는지 확인한다.
         Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
@@ -118,7 +118,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<CardAllReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
+    public List<CardReadResponseDto> getCardAllByBoard(final Long boardId, final User user) {
         // 해당 보드에 사용자가 속하는지 확인한다.
         checkUserInBoard(boardId, user.getId());
 
@@ -128,7 +128,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CardAllReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
+    public List<CardReadResponseDto> getCardAllBySection(final Long sectionId, final User user) {
         // 색션이 속한 보드에 사용자가 속하는지 확인한다.
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
