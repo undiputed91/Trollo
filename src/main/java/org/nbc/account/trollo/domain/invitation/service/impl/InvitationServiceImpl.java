@@ -103,17 +103,40 @@ public class InvitationServiceImpl implements InvitationService {
 
     }
 
-    private User getReceiverById(Long userId, User user) {
+    @Override
+    public void cancelInvitation(Long boardId, Long userId, User user) {
 
-        User guest = userRepository.findById(userId).orElseThrow(() ->
+        Board board = getBoardById(boardId);
+        User receiver = getUserById(userId);
+        Invitation invitation = getInvitation(receiver, board);
+
+        //only the person who sent the invitation can cancel the invitation
+        if(!invitation.getSender().getId().equals(user.getId())){
+            throw new InvitationDomainException(ErrorCode.ONLY_SENDER_CAN_CANCEL_INVITATION);
+        }
+
+        invitationRepository.delete(invitation);
+
+    }
+
+    private User getUserById(Long userId){
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
             new InvitationDomainException(ErrorCode.NOT_FOUND_USER));
 
+        return user;
+    }
+
+    private User getReceiverById(Long userId, User user) {
+
+        User receiver = getUserById(userId);
+
         //can't invite oneself
-        if (guest.getId().equals(user.getId())) {
+        if (receiver.getId().equals(user.getId())) {
             throw new InvitationDomainException(ErrorCode.SELF_CANNOT_BE_INVITED);
         }
 
-        return guest;
+        return receiver;
 
     }
 

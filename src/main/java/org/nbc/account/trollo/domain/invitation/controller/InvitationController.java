@@ -8,6 +8,7 @@ import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,16 @@ public class InvitationController {
 
         invitationService.rejectInvitation(boardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "초대 거절 성공");
+    }
+
+    @DeleteMapping("boards/{boardId}/cancel/{userId}")
+    public ApiResponse<Void> cancelInvitation(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "boardId") Long boardId,
+        @PathVariable(name = "userId") Long userId) {
+
+        invitationService.cancelInvitation(boardId, userId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "초대 취소 성공");
     }
 
 }
