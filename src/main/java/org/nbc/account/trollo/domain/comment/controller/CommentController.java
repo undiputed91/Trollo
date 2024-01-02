@@ -23,7 +23,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{cardId}/comments")
+    @PostMapping("/cards/{cardId}/comments")
     public ApiResponse<Void> saveComment(
         @RequestBody CommentSaveReq req,
         @PathVariable Long cardId,
