@@ -30,7 +30,6 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<BoardListResponseDto> responseDto = boardService.mainBoard(userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "메인 페이지", responseDto);
-
     }
 
     @PostMapping//보드 생성
