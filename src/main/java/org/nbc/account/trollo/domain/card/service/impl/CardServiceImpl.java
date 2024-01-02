@@ -1,5 +1,6 @@
 package org.nbc.account.trollo.domain.card.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceE
 import org.nbc.account.trollo.domain.card.exception.IllegalChangeSameCardException;
 import org.nbc.account.trollo.domain.card.exception.IllegalMoveToSectionException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
+import org.nbc.account.trollo.domain.card.exception.NotFoundFirstCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
@@ -133,7 +135,25 @@ public class CardServiceImpl implements CardService {
         checkUserInBoard(section.getBoard().getId(), user.getId());
 
         List<Card> cards = cardRepository.findAllBySectionId(sectionId);
-        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(cards);
+        List<Card> sortedCards = sortCards(cards);
+
+        return CardMapper.INSTANCE.toCardAllReadResponseDtoList(sortedCards);
+    }
+
+    private List<Card> sortCards(final List<Card> cards) {
+        List<Card> result = new ArrayList<>();
+
+        Card card = cards.stream()
+            .filter(c -> c.getPrevCard() == null)
+            .findFirst()
+            .orElseThrow(() -> new NotFoundFirstCardException(ErrorCode.NOT_FOUND_CARD));
+
+        while (card != null) {
+            result.add(card);
+            card = card.getNextCard();
+        }
+
+        return result;
     }
 
     @Override
@@ -171,9 +191,13 @@ public class CardServiceImpl implements CardService {
         // 카드 삭제 시, 이전 카드와 다음 카드의 순서를 재설정한다.
         Card prevCard = card.getPrevCard();
         Card nextCard = card.getNextCard();
-        card.getPrevCard().setNextCard(nextCard);
-        card.getNextCard().setPrevCard(prevCard);
 
+        if (prevCard != null) {
+            prevCard.setNextCard(nextCard);
+        }
+        if (nextCard != null) {
+            nextCard.setPrevCard(prevCard);
+        }
         cardRepository.delete(card);
 
         Board board = card.getSection().getBoard();
