@@ -1,6 +1,5 @@
 package org.nbc.account.trollo.domain.card.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.section.entity.Section;
 
@@ -52,7 +52,7 @@ public class Card {
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card",cascade = CascadeType.PERSIST,orphanRemoval = true)
+    @OneToMany(mappedBy = "card")
     private final List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
@@ -81,5 +81,49 @@ public class Card {
         this.content = content;
         this.color = color;
         this.deadline = deadline;
+    }
+
+    public void changeSequence(final Card toCard, final CardSequenceDirection direction) {
+        if (prevCard != null) {
+            prevCard.setNextCard(nextCard);
+        }
+        if (nextCard != null) {
+            nextCard.setPrevCard(prevCard);
+        }
+
+        switch (direction) {
+            case PREVIOUS:
+                Card toCardPrevCard = toCard.getPrevCard();
+                if (toCardPrevCard != null) {
+                    toCardPrevCard.setNextCard(this);
+                }
+                toCard.setPrevCard(this);
+                this.setNextCard(toCard);
+                this.setPrevCard(toCardPrevCard);
+                break;
+            case NEXT:
+                Card toCardNextCard = toCard.getNextCard();
+                if (toCardNextCard != null) {
+                    toCardNextCard.setPrevCard(this);
+                }
+                toCard.setNextCard(this);
+                this.setPrevCard(toCard);
+                this.setNextCard(toCardNextCard);
+                break;
+        }
+    }
+
+    public void changeSection(final Section section) {
+        if (prevCard != null) {
+            prevCard.setNextCard(nextCard);
+        }
+        if (nextCard != null) {
+            nextCard.setPrevCard(prevCard);
+        }
+
+        this.setPrevCard(null);
+        this.setNextCard(null);
+
+        this.section = section;
     }
 }

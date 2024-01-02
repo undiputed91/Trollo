@@ -2,6 +2,7 @@ package org.nbc.account.trollo.domain.card.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
@@ -27,13 +28,13 @@ public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping("/boards/{boardId}/columns/{columnId}/cards")
+    @PostMapping("/boards/{boardId}/sections/{sectionId}/cards")
     public ApiResponse<Void> createCard(
         @PathVariable Long boardId,
-        @PathVariable Long columnId,
+        @PathVariable Long sectionId,
         @RequestBody CardCreateRequestDto cardCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        cardService.createCard(cardCreateRequestDto, boardId, columnId, userDetails.getUser());
+        cardService.createCard(cardCreateRequestDto, boardId, sectionId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.CREATED.value(), "카드 생성");
     }
 
@@ -78,6 +79,25 @@ public class CardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(cardId, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "카드 삭제");
+    }
+
+    @PutMapping("/cards/{fromCardId}/to/{toCardId}/{direction}")
+    public ApiResponse<Void> changeCardSequence(
+        @PathVariable Long fromCardId,
+        @PathVariable Long toCardId,
+        @PathVariable CardSequenceDirection direction,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.changeCardSequence(fromCardId, toCardId, direction, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "카드 위치 변경");
+    }
+
+    @PutMapping("/cards/{cardId}/to/sections/{sectionId}")
+    public ApiResponse<Void> moveCardToSection(
+        @PathVariable Long cardId,
+        @PathVariable Long sectionId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.moveCardToSection(cardId, sectionId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "카드 위치 변경");
     }
 
 }
