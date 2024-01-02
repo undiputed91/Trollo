@@ -9,11 +9,17 @@ import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.comment.dto.res.CommentReadResponseDto;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
+import org.nbc.account.trollo.domain.worker.dto.response.WorkerResponseDto;
+import org.nbc.account.trollo.domain.worker.entity.Worker;
 
 @Mapper
 public interface CardMapper {
 
     CardMapper INSTANCE = Mappers.getMapper(CardMapper.class);
+
+    @Mapping(source = "user.id", target = "id")
+    @Mapping(source = "user.nickname", target = "nickname")
+    WorkerResponseDto toWorkerResponseDto(Worker worker);
 
     @Mapping(source = "user.nickname", target = "nickname")
     CommentReadResponseDto toCommentResponseDto(Comment comment);

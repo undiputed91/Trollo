@@ -11,15 +11,14 @@ import org.nbc.account.trollo.domain.board.repository.BoardRepository;
 import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
-import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadDetailResponseDto;
+import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceException;
 import org.nbc.account.trollo.domain.card.exception.IllegalChangeSameCardException;
 import org.nbc.account.trollo.domain.card.exception.IllegalMoveToSectionException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
-import org.nbc.account.trollo.domain.card.exception.NotFoundFirstCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
@@ -31,11 +30,17 @@ import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionInBoardException;
 import org.nbc.account.trollo.domain.section.repository.SectionRepository;
 import org.nbc.account.trollo.domain.user.entity.User;
+import org.nbc.account.trollo.domain.user.exception.NotFoundUserException;
+import org.nbc.account.trollo.domain.user.repository.UserRepository;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
 import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
 import org.nbc.account.trollo.domain.userboard.exception.ForbiddenAccessBoardException;
 import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardException;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
+import org.nbc.account.trollo.domain.worker.entity.Worker;
+import org.nbc.account.trollo.domain.worker.exception.AlreadyExistsWorkerException;
+import org.nbc.account.trollo.domain.worker.exception.NotFoundWorkerException;
+import org.nbc.account.trollo.domain.worker.repository.WorkerRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -50,6 +55,8 @@ public class CardServiceImpl implements CardService {
     private final UserBoardRepository userBoardRepository;
     private final ApplicationEventPublisher publisher;
     private final SectionRepository sectionRepository;
+    private final WorkerRepository workerRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -261,6 +268,50 @@ public class CardServiceImpl implements CardService {
 
         Board board = card.getSection().getBoard();
         publisher.publishEvent(new CardEvent(board, user, NotificationType.MOVED));
+    }
+
+    @Override
+    @Transactional
+    public void addWorker(final Long cardId, final Long workerId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        Long boardId = card.getSection().getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        User worker = userRepository.findById(workerId)
+            .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
+        checkUserInBoard(boardId, workerId);
+
+        if (workerRepository.existsByUserId(workerId)) {
+            throw new AlreadyExistsWorkerException(ErrorCode.ALREADY_EXIST_WORKER);
+        }
+
+        Worker workerEntity = Worker.builder()
+            .card(card)
+            .user(worker)
+            .build();
+
+        workerRepository.save(workerEntity);
+    }
+
+    @Override
+    @Transactional
+    public void removeWorker(final Long cardId, final Long workerId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        Long boardId = card.getSection().getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        User worker = userRepository.findById(workerId)
+            .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
+        checkUserInBoard(boardId, workerId);
+
+        Worker workerEntity = workerRepository.findByCardAndUser(card, worker)
+            .orElseThrow(() -> new NotFoundWorkerException(ErrorCode.NOT_FOUND_WORKER));
+
+        workerRepository.delete(workerEntity);
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {

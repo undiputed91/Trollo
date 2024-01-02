@@ -27,4 +27,8 @@ public interface CardService {
         User user);
 
     void moveCardToSection(Long cardId, Long sectionId, User user);
+
+    void addWorker(Long cardId, Long workerId, User user);
+
+    void removeWorker(Long cardId, Long workerId, User user);
 }
