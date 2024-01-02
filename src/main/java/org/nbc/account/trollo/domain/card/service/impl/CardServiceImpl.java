@@ -21,6 +21,7 @@ import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
 import org.nbc.account.trollo.domain.card.service.CardService;
+import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.notification.entity.NotificationType;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -100,7 +101,18 @@ public class CardServiceImpl implements CardService {
         Board board = card.getSection().getBoard();
         checkUserInBoard(board.getId(), user.getId());
 
-        return CardMapper.INSTANCE.toCardReadResponseDto(card);
+        long rate = getRate(card.getCheckList());
+
+        return CardMapper.INSTANCE.toCardReadResponseDto(card, rate);
+    }
+
+    private long getRate(final List<CheckList> checkList) {
+        int checkListCount = checkList.size();
+        long checkListSignCount = checkList
+            .stream()
+            .filter(CheckList::isCheckSign)
+            .count();
+        return (checkListSignCount / checkListCount) * 100;
     }
 
     @Override
@@ -210,11 +222,11 @@ public class CardServiceImpl implements CardService {
         Long boardIdBySection = section.getBoard().getId();
         checkUserInBoard(boardIdBySection, user.getId());
 
-        if(!Objects.equals(boardIdByCard, boardIdBySection)){
+        if (!Objects.equals(boardIdByCard, boardIdBySection)) {
             throw new ForbiddenChangeCardSequenceException(ErrorCode.FORBIDDEN_CHANGE_CARD);
         }
 
-        if(cardRepository.existsBySectionId(sectionId)){
+        if (cardRepository.existsBySectionId(sectionId)) {
             throw new IllegalMoveToSectionException(ErrorCode.ILLEGAL_MOVE_TO_SECTION);
         }
 
