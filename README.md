@@ -135,138 +135,177 @@
 
 ### 필수 구현 기능
 
+* 사용자 관리 기능
+  * 로그인/회원가입
+  * 사용자 정보 수정 및 삭제
+* 보드 관리 기능
+  * 보드 생성
+  * 보드 수정
+    * 보드 이름
+    * 배경 색상
+  * 보드 삭제
+    * 생성한 사용자만 삭제
+  * 보드 초대
+    * 특정 사용자들을 해당 보드에 초대시켜 협업
+* 컬럼 관리 기능
+  * 컬럼 생성
+    * 보드 내부에 컬럼을 생성할 수 있다
+  * 컬럼 이름 수정
+  * 컬럼 삭제
+  * 컬럼 순서 이동
+* 카드 관리 기능
+  * 카드 생성
+    * 컬럼 내부에 카드를 생성
+  * 카드 수정
+    * 카드 이름
+    * 카드 설명
+    * 카드 색상
+    * 작업자 할당
+    * 작업자 변경
+  * 카드 삭제
+  * 카드 이동
+    * 같은 컬럼 내에서 카드의 위치를 변경
+    * 카드를 다른 컬럼으로 이동
+* 카드 상세 기능
+  * 댓글 달기
+  * 마감일 지정
 
+### 스페셜 구현 기능
 
+* 카드에 고급 기능 구현
+  * 카드 파일 첨부/다운로드
+  * 카드 내에 체크리스트 추가
+* 알림 기능 구현
+  * 카드 상태가 변경되면 알림
+  * 카드에 댓글이 달리면 알림
 
 ## 디렉토리 구조
 
 <details>
-  
     <summary>자세히 보기</summary>
+ 
+    ├─main
+    │  ├─java
+    │  │  └─org
+    │  │      └─nbc
+    │  │          └─account
+    │  │              └─trollo
+    │  │                  ├─domain
+    │  │                  │  ├─board
+    │  │                  │  │  ├─combine
+    │  │                  │  │  │  └─impl
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─card
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─converter
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  ├─request
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─mapper
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─checklist
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  ├─request
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─comment
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  ├─req
+    │  │                  │  │  │  └─res
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─mapper
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─invitation
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─notification
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─event
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─S3File
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─section
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─user
+    │  │                  │  │  ├─controller
+    │  │                  │  │  ├─dto
+    │  │                  │  │  │  ├─request
+    │  │                  │  │  │  └─response
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  ├─repository
+    │  │                  │  │  └─service
+    │  │                  │  │      └─impl
+    │  │                  │  ├─userboard
+    │  │                  │  │  ├─entity
+    │  │                  │  │  ├─exception
+    │  │                  │  │  └─repository
+    │  │                  │  ├─usernotification
+    │  │                  │  │  ├─entity
+    │  │                  │  │  └─repository
+    │  │                  │  └─worker
+    │  │                  │      ├─dto
+    │  │                  │      │  └─response
+    │  │                  │      ├─entity
+    │  │                  │      ├─exception
+    │  │                  │      └─repository
+    │  │                  └─global
+    │  │                      ├─config
+    │  │                      ├─dto
+    │  │                      ├─entity
+    │  │                      ├─exception
+    │  │                      ├─jwt
+    │  │                      ├─security
+    │  │                      └─util
+    │  └─resources
+    └─test
+        └─java
+            └─org
+                └─nbc
+                    └─account
+                        └─trollo
 
-`  
-  ├─main
-│  ├─java
-│  │  └─org
-│  │      └─nbc
-│  │          └─account
-│  │              └─trollo
-│  │                  ├─domain
-│  │                  │  ├─board
-│  │                  │  │  ├─combine
-│  │                  │  │  │  └─impl
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─card
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─converter
-│  │                  │  │  ├─dto
-│  │                  │  │  │  ├─request
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─mapper
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─checklist
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  ├─request
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─comment
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  ├─req
-│  │                  │  │  │  └─res
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─mapper
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─invitation
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─notification
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─event
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─S3File
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─section
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─user
-│  │                  │  │  ├─controller
-│  │                  │  │  ├─dto
-│  │                  │  │  │  ├─request
-│  │                  │  │  │  └─response
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  ├─repository
-│  │                  │  │  └─service
-│  │                  │  │      └─impl
-│  │                  │  ├─userboard
-│  │                  │  │  ├─entity
-│  │                  │  │  ├─exception
-│  │                  │  │  └─repository
-│  │                  │  ├─usernotification
-│  │                  │  │  ├─entity
-│  │                  │  │  └─repository
-│  │                  │  └─worker
-│  │                  │      ├─dto
-│  │                  │      │  └─response
-│  │                  │      ├─entity
-│  │                  │      ├─exception
-│  │                  │      └─repository
-│  │                  └─global
-│  │                      ├─config
-│  │                      ├─dto
-│  │                      ├─entity
-│  │                      ├─exception
-│  │                      ├─jwt
-│  │                      ├─security
-│  │                      └─util
-│  └─resources
-└─test
-    └─java
-        └─org
-            └─nbc
-                └─account
-                    └─trollo
-`
 </details>
 
