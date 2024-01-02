@@ -3,17 +3,19 @@ package org.nbc.account.trollo.domain.user.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.nbc.account.trollo.domain.comment.entity.CommentEntity;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
+import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
 import org.nbc.account.trollo.domain.user.service.UserService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,5 +55,14 @@ public class UserController {
             userService.mypage(userDetails.getUser()));
     }
 
+    //update personal informations
+    @PutMapping("/edit")
+    public ApiResponse<Void> updateInfo(
+        @Valid @RequestBody UserInfoUpdateReq updateReq,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.updateInfo(updateReq, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "개인정보 업데이트");
+    }
 
 }
