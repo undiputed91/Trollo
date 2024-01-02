@@ -1,7 +1,6 @@
 package org.nbc.account.trollo.domain.checklist.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.nbc.account.trollo.domain.checklist.dto.request.CheckListCreateRequestDto;
 import org.nbc.account.trollo.domain.checklist.dto.request.CheckListRequestDto;
 import org.nbc.account.trollo.domain.checklist.service.CheckListService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
@@ -26,7 +25,7 @@ public class CheckListController {
     @PostMapping("/{cardId}/checklists")
     public ApiResponse<Void> createList(
         @PathVariable Long cardId,
-        @RequestBody CheckListCreateRequestDto requestDto,
+        @RequestBody CheckListRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         checkListService.createList(cardId, requestDto, userDetails);
         return new ApiResponse<>(HttpStatus.CREATED.value(), "체크리스트 생성");
@@ -40,6 +39,15 @@ public class CheckListController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         checkListService.updateCheckList(cardId, checkListId, requestDto, userDetails);
         return new ApiResponse<>(HttpStatus.OK.value(), "체크리스트 수정");
+    }
+
+    @PutMapping("/{cardId}/checklists/{checkListId}/check")
+    public ApiResponse<Void> checkUncheck(
+        @PathVariable Long cardId,
+        @PathVariable Long checkListId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        checkListService.checkUncheck(cardId,checkListId,userDetails);
+        return new ApiResponse<>(HttpStatus.OK.value(), "확인/취소 변경 완료");
     }
 
     @DeleteMapping("/{cardId}/checklists/{checkListId}")
