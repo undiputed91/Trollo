@@ -16,6 +16,7 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.card.entity.Card.CardBuilder;
 import org.nbc.account.trollo.domain.card.exception.ForbiddenChangeCardSequenceException;
 import org.nbc.account.trollo.domain.card.exception.IllegalChangeSameCardException;
+import org.nbc.account.trollo.domain.card.exception.IllegalMoveToSectionException;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.card.mapper.CardMapper;
 import org.nbc.account.trollo.domain.card.repository.CardRepository;
@@ -170,7 +171,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional
-    public void updateCardSequence(final Long fromCardId, final Long toCardId,
+    public void changeCardSequence(final Long fromCardId, final Long toCardId,
         final CardSequenceDirection direction,
         final User user) {
         Card fromCard = cardRepository.findById(fromCardId)
@@ -193,6 +194,32 @@ public class CardServiceImpl implements CardService {
         }
 
         fromCard.changeSequence(toCard, direction);
+    }
+
+    @Override
+    @Transactional
+    public void moveCardToSection(final Long cardId, final Long sectionId, final User user) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));
+
+        Long boardIdByCard = card.getSection().getBoard().getId();
+        checkUserInBoard(boardIdByCard, user.getId());
+
+        Section section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
+
+        Long boardIdBySection = section.getBoard().getId();
+        checkUserInBoard(boardIdBySection, user.getId());
+
+        if(!Objects.equals(boardIdByCard, boardIdBySection)){
+            throw new ForbiddenChangeCardSequenceException(ErrorCode.FORBIDDEN_CHANGE_CARD);
+        }
+
+        if(cardRepository.existsBySectionId(sectionId)){
+            throw new IllegalMoveToSectionException(ErrorCode.ILLEGAL_MOVE_TO_SECTION);
+        }
+
+        card.changeSection(section);
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {
