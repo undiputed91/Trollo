@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
+import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
@@ -63,6 +64,16 @@ public class UserController {
 
         userService.updateInfo(updateReq, userDetails.getUser());
         return new ApiResponse<>(HttpStatus.OK.value(), "개인정보 업데이트");
+    }
+
+    //update password
+    @PutMapping("/pw")
+    public ApiResponse<Void> updatePassword(
+        @Valid @RequestBody PasswordUpdateReq updateReq,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.updatePassword(updateReq, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "비밀번호 업데이트");
     }
 
 }

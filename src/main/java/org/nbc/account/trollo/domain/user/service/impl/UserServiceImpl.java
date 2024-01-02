@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
+import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
@@ -84,6 +85,28 @@ public class UserServiceImpl implements UserService {
         }
 
         user.updateNickname(nickname);
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(PasswordUpdateReq updateReq, User user) {
+
+        String password = updateReq.password();
+        String newPassword = passwordEncoder.encode(updateReq.newPassword());
+        String newPasswordCheck = updateReq.newPasswordCheck();
+
+        // check if new password matches with new password check
+        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
+            throw new UserDomainException(ErrorCode.INVALID_PASSWORD_CHECK);
+        }
+
+        //if password is equal to the saved password, proceed
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserDomainException(ErrorCode.NOT_MATCH_PASSWORD);
+        }
+
+        user.updatePassword(newPassword);
+
     }
 
 }

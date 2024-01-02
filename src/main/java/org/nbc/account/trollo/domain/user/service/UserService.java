@@ -2,6 +2,7 @@ package org.nbc.account.trollo.domain.user.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
+import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
@@ -17,5 +18,7 @@ public interface UserService {
     MyPageRes mypage(User user);
 
     void updateInfo(UserInfoUpdateReq updateReq ,User user);
+
+    void updatePassword(PasswordUpdateReq updateReq, User user);
 
 }
