@@ -35,7 +35,7 @@ public class UserController {
 
         userService.signup(signupReq);
         // if succeeded
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "completed signing up");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "회원가입 성공");
     }
 
     // login
@@ -44,7 +44,7 @@ public class UserController {
         HttpServletResponse response) {
 
         userService.login(loginReq, response);
-        return new ApiResponse<>(HttpStatus.OK.value(), "login succeeded");
+        return new ApiResponse<>(HttpStatus.OK.value(), "로그인 성공");
     }
 
     // my page
@@ -52,7 +52,7 @@ public class UserController {
     public ApiResponse<MyPageRes> mypage(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return new ApiResponse<>(HttpStatus.OK.value(), "마이페이지 조회",
+        return new ApiResponse<>(HttpStatus.OK.value(), "마이페이지 조회 성공",
             userService.mypage(userDetails.getUser()));
     }
 
@@ -63,7 +63,7 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         userService.updateInfo(updateReq, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.OK.value(), "개인정보 업데이트");
+        return new ApiResponse<>(HttpStatus.OK.value(), "개인정보 업데이트 성공");
     }
 
     //update password
@@ -73,7 +73,7 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         userService.updatePassword(updateReq, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.OK.value(), "비밀번호 업데이트");
+        return new ApiResponse<>(HttpStatus.OK.value(), "비밀번호 업데이트 성공");
     }
 
     //delete my account
