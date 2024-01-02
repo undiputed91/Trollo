@@ -2,7 +2,6 @@ package org.nbc.account.trollo.domain.invitation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationsRes;
-import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.invitation.service.InvitationService;
 import org.nbc.account.trollo.global.dto.ApiResponse;
 import org.nbc.account.trollo.global.security.UserDetailsImpl;
@@ -44,12 +43,12 @@ public class InvitationController {
     }
 
     @PutMapping("/boards/{boardId}/approve")
-    public ApiResponse<UserBoardRes> approveInvitation(
+    public ApiResponse<Void> approveInvitation(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "boardId") Long boardId) {
 
-        return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공",
-            invitationService.approveInvitation(boardId, userDetails.getUser()));
+        invitationService.approveInvitation(boardId, userDetails.getUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "초대 수락 성공");
     }
 
     @PutMapping("/boards/{boardId}/reject")
