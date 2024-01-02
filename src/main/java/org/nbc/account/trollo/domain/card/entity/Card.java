@@ -17,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
@@ -42,21 +44,24 @@ public class Card {
     private LocalDateTime deadline;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "prev_card_id")
     private Card prevCard;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card")
     private final List<CheckList> checkList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "card")
     private final List<Comment> comments = new ArrayList<>();
 
     @Builder

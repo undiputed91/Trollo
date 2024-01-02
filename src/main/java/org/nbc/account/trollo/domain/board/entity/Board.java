@@ -32,12 +32,6 @@ public class Board extends BaseEntity {
 
     private String color;
 
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private final List<Section> section= new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private final List<Notification> notifications= new ArrayList<>();
-
     @Builder
     public Board(final String name, final String color) {
         this.name = name;

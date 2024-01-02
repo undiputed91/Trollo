@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.nbc.account.trollo.domain.card.entity.Card;
 
 @Getter
@@ -31,6 +33,7 @@ public class CheckList {
     private boolean checkSign;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 

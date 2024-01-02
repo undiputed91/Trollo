@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.notification.entity.Notification;
 import org.nbc.account.trollo.domain.notification.event.CardEvent;
@@ -28,17 +30,18 @@ public class UserNotification {
 
     @Id
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Id
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "notification_id", nullable = false)
     private Notification notification;
 
     @Enumerated(EnumType.STRING)
     private UserNotificationStatus status;
-
 
     public UserNotification(Notification notification,User user){
         this.user = user;
