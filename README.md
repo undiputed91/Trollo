@@ -143,8 +143,9 @@
 <details>
   
     <summary>자세히 보기</summary>
-  
-├─main
+
+`  
+  ├─main
 │  ├─java
 │  │  └─org
 │  │      └─nbc
@@ -266,6 +267,6 @@
             └─nbc
                 └─account
                     └─trollo
-
+`
 </details>
 
