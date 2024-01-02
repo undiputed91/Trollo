@@ -4,8 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CheckListRequestDto(
-    String description,
-    boolean checkSign
+    String description
 ) {
 
 }

@@ -35,15 +35,21 @@ public class CheckList {
     private Card card;
 
     @Builder
-    public CheckList(Card card, String description, boolean checkSign) {
+    public CheckList(Card card, String description) {
         this.description = description;
-        this.checkSign = checkSign;
         this.card = card;
     }
 
-    public void update(String description, boolean checkSign) {
+    public void update(String description) {
         this.description = description;
-        this.checkSign = checkSign;
+    }
+
+    public void changeToFalse() {
+        this.checkSign = false;
+    }
+
+    public void changeToTrue() {
+        this.checkSign = true;
     }
 
 }
