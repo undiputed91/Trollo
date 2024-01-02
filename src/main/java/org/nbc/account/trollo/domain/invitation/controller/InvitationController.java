@@ -31,7 +31,7 @@ public class InvitationController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         invitationService.createInvitation(boardId, userId, userDetails.getUser());
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "successfully invited user");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "보드에 사용자 초대 성공");
     }
 
     // view invitations I got
@@ -39,7 +39,7 @@ public class InvitationController {
     public ApiResponse<InvitationsRes> getInvitations(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은/보낸 초대 조회",
+        return new ApiResponse<>(HttpStatus.OK.value(), "내가 받은/보낸 초대 조회 성공",
             invitationService.getInvitations(userDetails.getUser()));
     }
 
