@@ -20,6 +20,10 @@ public enum ErrorCode {
     ONLY_PARTICIPANTS_CAN_INVITE(HttpStatus.BAD_REQUEST, "보드 구성원만 다른 사람을 초대할 수 있습니다."),
     BAD_SEQUENCE_DIRECTION(HttpStatus.BAD_REQUEST, "카드 순서는 previous/next로 바꿀 수 있습니다."),
     ILLEGAL_CHANGE_SAME_CARD(HttpStatus.BAD_REQUEST, "같은 카드에 대해서 순서를 바꿀 순 없습니다."),
+    ILLEGAL_MOVE_TO_SECTION(HttpStatus.BAD_REQUEST, "해당 API는 카드가 없는 색션으로만 이동시킬 수 있습니다."),
+
+    // ?
+    BAD_COMMENT_AND_BOARD_ID(HttpStatus.BAD_REQUEST, "댓글 또는 보드를 찾을 수 없습니다."),
 
     // 403
     FORBIDDEN_ACCESS_CARD(HttpStatus.FORBIDDEN, "해당 카드에 접근할 수 없습니다."),
@@ -38,7 +42,8 @@ public enum ErrorCode {
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "색션을 찾지 못하였습니다."),
     NOT_FOUND_SECTION_IN_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 색션입니다."),
     NOT_FOUND_CARD(HttpStatus.NOT_FOUND, "카드를 찾지 못하였습니다."),
-    NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND, "초대가 존재하지 않습니다.");
+    NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND, "초대가 존재하지 않습니다."),
+    NOT_FOUND_UNREADSTATUS(HttpStatus.NOT_FOUND,"읽지 않은 알림글이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
