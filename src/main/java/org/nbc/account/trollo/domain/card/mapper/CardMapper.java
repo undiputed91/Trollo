@@ -2,6 +2,7 @@ package org.nbc.account.trollo.domain.card.mapper;
 
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
@@ -13,7 +14,7 @@ public interface CardMapper {
 
     CardMapper INSTANCE = Mappers.getMapper(CardMapper.class);
 
-    CardReadResponseDto toCardReadResponseDto(Card card);
+    CardReadResponseDto toCardReadResponseDto(Card card, Float rate);
 
     CardAllReadResponseDto toCardAllReadResponseDto(Card card);
 

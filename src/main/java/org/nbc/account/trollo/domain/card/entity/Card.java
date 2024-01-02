@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
+import org.nbc.account.trollo.domain.comment.entity.Comment;
 import org.nbc.account.trollo.domain.section.entity.Section;
 
 @Getter
@@ -52,8 +54,11 @@ public class Card {
     @JoinColumn(name = "next_card_id")
     private Card nextCard;
 
-    @OneToMany(mappedBy = "card")
-    private final List<CheckList> checkLists = new ArrayList<>();
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER)
+    private final List<CheckList> checkList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER)
+    private final List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Card(final String title, final String content, final String color,
