@@ -1,7 +1,7 @@
 package org.nbc.account.trollo.domain.card.service;
 
 import java.util.List;
-import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
@@ -23,7 +23,7 @@ public interface CardService {
 
     void deleteCard(Long cardId, User user);
 
-    void changeCardSequence(Long fromCardId, Long toCardId, CardSequenceDirection direction,
+    void changeCardSequence(Long fromCardId, Long toCardId, SequenceDirection direction,
         User user);
 
     void moveCardToSection(Long cardId, Long sectionId, User user);

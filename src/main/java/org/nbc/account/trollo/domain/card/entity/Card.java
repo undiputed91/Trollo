@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.checklist.entity.CheckList;
 import org.nbc.account.trollo.domain.comment.entity.Comment;
 import org.nbc.account.trollo.domain.section.entity.Section;
@@ -88,7 +87,7 @@ public class Card {
         this.deadline = deadline;
     }
 
-    public void changeSequence(final Card toCard, final CardSequenceDirection direction) {
+    public void changeSequence(final Card toCard, final SequenceDirection direction) {
         if (prevCard != null) {
             prevCard.setNextCard(nextCard);
         }

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.exception.NotFoundBoardException;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
-import org.nbc.account.trollo.domain.card.converter.CardSequenceDirection;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.card.dto.request.CardCreateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.request.CardUpdateRequestDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
@@ -207,7 +207,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public void changeCardSequence(final Long fromCardId, final Long toCardId,
-        final CardSequenceDirection direction,
+        final SequenceDirection direction,
         final User user) {
         Card fromCard = cardRepository.findById(fromCardId)
             .orElseThrow(() -> new NotFoundCardException(ErrorCode.NOT_FOUND_CARD));

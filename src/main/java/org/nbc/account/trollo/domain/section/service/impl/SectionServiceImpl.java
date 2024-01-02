@@ -1,11 +1,14 @@
 package org.nbc.account.trollo.domain.section.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
+import org.nbc.account.trollo.domain.card.converter.SequenceDirection;
 import org.nbc.account.trollo.domain.card.exception.NotFoundCardException;
 import org.nbc.account.trollo.domain.section.dto.SectionCreateRequestDto;
 import org.nbc.account.trollo.domain.section.entity.Section;
+import org.nbc.account.trollo.domain.section.exception.IllegalChangeSameSectionException;
 import org.nbc.account.trollo.domain.section.exception.NotFoundSectionException;
 import org.nbc.account.trollo.domain.section.repository.SectionRepository;
 import org.nbc.account.trollo.domain.section.service.SectionService;
@@ -66,6 +69,27 @@ public class SectionServiceImpl implements SectionService {
 //        section.getNextSection().setPrevSection(prevSection);
 
         sectionRepository.delete(section);
+    }
+
+    @Override
+    @Transactional
+    public void changeSectionSequence(final Long fromSectionId, final Long toSectionId,
+        final SequenceDirection direction, final User user) {
+        Section fromSection = sectionRepository.findById(fromSectionId)
+            .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
+        Long boardId = fromSection.getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        Section toSection = sectionRepository.findById(toSectionId)
+            .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
+        boardId = toSection.getBoard().getId();
+        checkUserInBoard(boardId, user.getId());
+
+        if (Objects.equals(fromSection, toSection)) {
+            throw new IllegalChangeSameSectionException(ErrorCode.ILLEGAL_CHANGE_SAME_SECTION);
+        }
+
+        fromSection.changeSequence(toSection, direction);
     }
 
     private void checkUserInBoard(Long boardId, Long userId) {
