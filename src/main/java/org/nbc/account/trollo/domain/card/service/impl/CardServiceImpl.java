@@ -45,7 +45,6 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
-    private final ColumnRepository columnRepository;
     private final ApplicationEventPublisher publisher;
     private final SectionRepository sectionRepository;
 
