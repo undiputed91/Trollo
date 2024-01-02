@@ -113,7 +113,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     private User getReceiverById(Long userId, User user) {
 
-        User receiver = getUserById(Long userId);
+        User receiver = getUserById(userId);
 
         //can't invite oneself
         if (receiver.getId().equals(user.getId())) {
