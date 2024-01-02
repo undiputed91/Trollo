@@ -29,20 +29,19 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void createBoard(BoardRequestDto boardRequestDto, User user) {
-        Board board = new Board(boardRequestDto.name(), boardRequestDto.color());
 
-        Board boardBuilder = Board.builder()
+        Board board = Board.builder()
             .name(boardRequestDto.name())
             .color(boardRequestDto.color())
             .build();
-        boardRepository.save(boardBuilder);
-        //보드 생성하면서 생성자에게 권한줘야됨
-//        UserBoard creator = UserBoard.builder()
-//            .user(user)
-//            .board(board)
-//            .role(UserBoardRole.CREATOR)
-//            .build();
-//        userBoardRepository.save(creator);
+        boardRepository.save(board);
+
+        UserBoard creator = UserBoard.builder()
+            .user(user)
+            .board(board)
+            .role(UserBoardRole.CREATOR)
+            .build();
+        userBoardRepository.save(creator);
 
     }
 
