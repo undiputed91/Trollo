@@ -29,7 +29,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void createBoard(BoardRequestDto boardRequestDto, User user) {
-        Board board = new Board(boardRequestDto.name(), boardRequestDto.color());
 
         Board boardBuilder = Board.builder()
             .name(boardRequestDto.name())
@@ -37,12 +36,12 @@ public class BoardServiceImpl implements BoardService {
             .build();
         boardRepository.save(boardBuilder);
         //보드 생성하면서 생성자에게 권한줘야됨
-//        UserBoard creator = UserBoard.builder()
-//            .user(user)
-//            .board(board)
-//            .role(UserBoardRole.CREATOR)
-//            .build();
-//        userBoardRepository.save(creator);
+        UserBoard creator = UserBoard.builder()
+            .user(user)
+            .board(boardBuilder)
+            .role(UserBoardRole.CREATOR)
+            .build();
+        userBoardRepository.save(creator);
 
     }
 
@@ -68,14 +67,14 @@ public class BoardServiceImpl implements BoardService {
         if (!userBoard.getRole().equals(UserBoardRole.CREATOR)) {
             throw new NotFoundBoardException(ErrorCode.FORBIDDEN_ACCESS_BOARDCHANGE);
         }
+        userBoardRepository.delete(userBoard);
         boardRepository.delete(board);
 
     }
 
     @Override
     public List<BoardListResponseDto> mainBoard(User user) {
-
-        //List<Board> boards = boardRepository.findById(user.getId());
+        //List<Board> boards = userBoardRepository.findByUser_Id(user.getId());
         return null;
     }
 
