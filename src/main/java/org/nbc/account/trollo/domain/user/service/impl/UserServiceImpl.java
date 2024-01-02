@@ -4,16 +4,20 @@ import static org.nbc.account.trollo.global.jwt.JwtUtil.AUTHORIZATION_HEADER;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.user.dto.request.LoginReq;
 import org.nbc.account.trollo.domain.user.dto.request.PasswordUpdateReq;
 import org.nbc.account.trollo.domain.user.dto.request.SignupReq;
 import org.nbc.account.trollo.domain.user.dto.request.UserInfoUpdateReq;
+import org.nbc.account.trollo.domain.user.dto.response.BoardRes;
 import org.nbc.account.trollo.domain.user.dto.response.MyPageRes;
 import org.nbc.account.trollo.domain.user.entity.User;
 import org.nbc.account.trollo.domain.user.exception.UserDomainException;
 import org.nbc.account.trollo.domain.user.repository.UserRepository;
 import org.nbc.account.trollo.domain.user.service.UserService;
+import org.nbc.account.trollo.domain.userboard.entity.UserBoard;
+import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.nbc.account.trollo.global.jwt.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserBoardRepository userBoardRepository;
 
     public void signup(SignupReq signupReq) {
 
@@ -70,7 +75,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MyPageRes mypage(User user) {
-        return new MyPageRes(user.getEmail(), user.getNickname());
+
+        List<UserBoard> userboards = userBoardRepository.findAllByUser(user).orElse(null);
+
+        List<BoardRes> boards = null;
+
+        if (userboards != null) {
+            boards = userboards
+                .stream()
+                .map(
+                    (UserBoard userboard)
+                        -> new BoardRes(
+                        userboard.getBoard().getId(),
+                        userboard.getBoard().getName(),
+                        userboard.getBoard().getColor())).toList();
+        }
+
+        return new MyPageRes(user.getEmail(), user.getNickname(), boards);
+
     }
 
     @Override
