@@ -1,6 +1,7 @@
 package org.nbc.account.trollo.domain.section.service.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
@@ -28,16 +29,29 @@ public class SectionServiceImpl implements SectionService {
     private final BoardRepository boardRepository;
 
     @Override
+    @Transactional
     public void createSection(Long boardId, SectionCreateRequestDto sectionCreateRequestDto,
         User user) {
         checkUserInBoard(boardId, user.getId());
         Board board = boardRepository.findById(boardId)
             .orElseThrow(() -> new NotFoundSectionException(ErrorCode.NOT_FOUND_SECTION));
-        Section sectionBuilder = Section.builder()
+
+        Section section = Section.builder()
             .board(board)
             .name(sectionCreateRequestDto.name())
             .build();
-        sectionRepository.save(sectionBuilder);
+
+        Section lastSection = sectionRepository.findByBoardId(boardId).stream()
+            .filter(s -> s.getNextSection() == null)
+            .findFirst()
+            .orElse(null);
+
+        if(lastSection != null)
+            lastSection.setNextSection(section);
+
+        section.setPrevSection(lastSection);
+
+        sectionRepository.save(section);
     }
 
     @Override
@@ -95,7 +109,6 @@ public class SectionServiceImpl implements SectionService {
     private void checkUserInBoard(Long boardId, Long userId) {
         userBoardRepository.findByBoardIdAndUserId(boardId, userId)
             .orElseThrow(() -> new NotFoundUserBoardException(ErrorCode.NOT_FOUND_USER_BOARD));
-
     }
 }
 
