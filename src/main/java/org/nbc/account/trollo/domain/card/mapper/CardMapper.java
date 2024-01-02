@@ -8,11 +8,16 @@ import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
 import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
+import org.nbc.account.trollo.domain.comment.dto.res.CommentReadResponseDto;
+import org.nbc.account.trollo.domain.comment.entity.Comment;
 
 @Mapper
 public interface CardMapper {
 
     CardMapper INSTANCE = Mappers.getMapper(CardMapper.class);
+
+    @Mapping(source = "user.nickname", target = "nickname")
+    CommentReadResponseDto toCommentResponseDto(Comment comment);
 
     CardReadResponseDto toCardReadResponseDto(Card card, Float rate);
 
