@@ -3,6 +3,9 @@ package org.nbc.account.trollo.global.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +30,6 @@ public class S3Provider {
         return metadata;
     }
 
- /*   private void createFolder(String folderName) {
-        if (!amazonS3.doesObjectExist(bucket, folderName)) {
-            amazonS3.putObject(
-                bucket,
-                folderName + SEPARATOR,
-                new ByteArrayInputStream(new byte[0]),
-                new ObjectMetadata());
-        }
-    }*/
-
     public String saveFile(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
@@ -58,16 +51,26 @@ public class S3Provider {
         if (originalFilename == null) {
             return;
         }
-        S3Validator.validate(amazonS3, bucket, originalFilename);
         amazonS3.deleteObject(bucket, originalFilename);
     }
 
     public String updateImage(String originalFilename, MultipartFile multipartFile)
         throws IOException {
-        S3Validator.validate(amazonS3, bucket, originalFilename);
         ObjectMetadata metadata = setObjectMetadata(multipartFile);
-
         amazonS3.putObject(bucket, originalFilename, multipartFile.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, originalFilename).toString();
+    }
+
+    public byte[] downloadFile(String originalFilename) {
+        System.out.println("originalFilename = " + originalFilename);
+        S3Object s3Object = amazonS3.getObject(bucket, originalFilename);
+        S3ObjectInputStream inputStream = s3Object.getObjectContent();
+        try {
+            byte[] content = IOUtils.toByteArray(inputStream);
+            return content;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

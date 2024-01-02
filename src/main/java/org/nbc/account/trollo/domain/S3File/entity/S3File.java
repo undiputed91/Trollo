@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.global.entity.BaseEntity;
 
 
 @Getter
@@ -21,7 +22,7 @@ import org.nbc.account.trollo.domain.card.entity.Card;
 @AllArgsConstructor
 @Entity
 @Table(name = "TB_FILE")
-public class S3File {
+public class S3File extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

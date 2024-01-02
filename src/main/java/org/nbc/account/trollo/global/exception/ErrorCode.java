@@ -46,6 +46,7 @@ public enum ErrorCode {
     NOT_FOUND_SECTION_IN_BOARD(HttpStatus.NOT_FOUND, "해당 보드에 속하지 않은 색션입니다."),
     NOT_FOUND_CARD(HttpStatus.NOT_FOUND, "카드를 찾지 못하였습니다."),
     NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND, "초대가 존재하지 않습니다."),
+    EMPTYFILE(HttpStatus.BAD_REQUEST, "파일을 올려주세요"),
     NOT_FOUND_UNREADSTATUS(HttpStatus.NOT_FOUND,"읽지 않은 알림글이 없습니다."),
     NOT_FOUND_WORKER(HttpStatus.NOT_FOUND, "작업자를 찾을 수 없습니다.");
 
