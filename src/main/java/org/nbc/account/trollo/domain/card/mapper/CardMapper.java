@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.nbc.account.trollo.domain.card.dto.response.CardAllReadResponseDto;
 import org.nbc.account.trollo.domain.card.dto.response.CardReadResponseDto;
 import org.nbc.account.trollo.domain.card.entity.Card;
+import org.nbc.account.trollo.domain.checklist.dto.response.CheckListResponseDto;
 
 @Mapper
 public interface CardMapper {
