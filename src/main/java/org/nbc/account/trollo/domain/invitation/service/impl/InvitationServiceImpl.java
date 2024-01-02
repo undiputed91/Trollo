@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.nbc.account.trollo.domain.board.entity.Board;
 import org.nbc.account.trollo.domain.board.repository.BoardRepository;
-import org.nbc.account.trollo.domain.invitation.dto.response.InvitationRes;
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationsRes;
-import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.ReceivedInvitationRes;
+import org.nbc.account.trollo.domain.invitation.dto.response.SentInvitationRes;
 import org.nbc.account.trollo.domain.invitation.entity.Invitation;
 import org.nbc.account.trollo.domain.invitation.exception.InvitationDomainException;
 import org.nbc.account.trollo.domain.invitation.repository.InvitationRepository;
@@ -58,24 +58,36 @@ public class InvitationServiceImpl implements InvitationService {
                 new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION)
             );
 
-        List<InvitationRes> receivedInvitations = receivedInvitationList.stream()
-            .map((Invitation invitation) -> new InvitationRes(
-                invitation.getId().getBoard().getId())).toList();
+        List<ReceivedInvitationRes> receivedInvitations = receivedInvitationList
+            .stream()
+            .map((Invitation invitation) -> new ReceivedInvitationRes(
+                invitation.getId().getBoard().getId(),
+                invitation.getId().getBoard().getName(),
+                invitation.getSender().getId(),
+                invitation.getSender().getNickname()
+                )
+            ).toList();
 
         List<Invitation> sentInvitationList = invitationRepository.findAllBySender(user)
             .orElseThrow(() ->
                 new InvitationDomainException(ErrorCode.NOT_FOUND_INVITATION));
 
-        List<InvitationRes> sentInvitations = sentInvitationList.stream()
-            .map((Invitation invitation) -> new InvitationRes(
-                invitation.getId().getBoard().getId())).toList();
+        List<SentInvitationRes> sentInvitations = sentInvitationList
+            .stream()
+            .map((Invitation invitation) -> new SentInvitationRes(
+                    invitation.getId().getBoard().getId(),
+                    invitation.getId().getBoard().getName(),
+                    invitation.getId().getReceiver().getId(),
+                    invitation.getId().getReceiver().getNickname()
+                )
+            ).toList();
 
         return new InvitationsRes(receivedInvitations, sentInvitations);
     }
 
     @Transactional
     @Override
-    public UserBoardRes approveInvitation(Long boardId, User user) {
+    public void approveInvitation(Long boardId, User user) {
 
         Board board = getBoardById(boardId);
 
@@ -87,9 +99,6 @@ public class InvitationServiceImpl implements InvitationService {
         //save new User and Board relation which means the person is a participant of the board
         UserBoard newUserBoard = new UserBoard(user, board, UserBoardRole.PARTICIPANT);
         userBoardRepository.save(newUserBoard);
-
-        return new UserBoardRes(newUserBoard.getUser().getEmail(), newUserBoard.getBoard().getId(),
-            newUserBoard.getRole());
 
     }
 
@@ -103,17 +112,40 @@ public class InvitationServiceImpl implements InvitationService {
 
     }
 
-    private User getReceiverById(Long userId, User user) {
+    @Override
+    public void cancelInvitation(Long boardId, Long userId, User user) {
 
-        User guest = userRepository.findById(userId).orElseThrow(() ->
+        Board board = getBoardById(boardId);
+        User receiver = getUserById(userId);
+        Invitation invitation = getInvitation(receiver, board);
+
+        //only the person who sent the invitation can cancel the invitation
+        if(!invitation.getSender().getId().equals(user.getId())){
+            throw new InvitationDomainException(ErrorCode.ONLY_SENDER_CAN_CANCEL_INVITATION);
+        }
+
+        invitationRepository.delete(invitation);
+
+    }
+
+    private User getUserById(Long userId){
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
             new InvitationDomainException(ErrorCode.NOT_FOUND_USER));
 
+        return user;
+    }
+
+    private User getReceiverById(Long userId, User user) {
+
+        User receiver = getUserById(userId);
+
         //can't invite oneself
-        if (guest.getId().equals(user.getId())) {
+        if (receiver.getId().equals(user.getId())) {
             throw new InvitationDomainException(ErrorCode.SELF_CANNOT_BE_INVITED);
         }
 
-        return guest;
+        return receiver;
 
     }
 

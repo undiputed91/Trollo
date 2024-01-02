@@ -52,6 +52,6 @@ public class Notification {
         this.board = event.board();
         this.user = event.user();
         this.fieldContent =
-            event.board() + "번 BOARD에서 카드" + event.notificationType().getWord() + "되었습니다.";
+            event.user().getNickname()+" 회원에 의해 "+event.board().getName() + " BOARD에서 카드" + event.notificationType().getWord() + "되었습니다.";
     }
 }

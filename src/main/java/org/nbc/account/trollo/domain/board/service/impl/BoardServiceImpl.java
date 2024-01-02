@@ -14,6 +14,7 @@ import org.nbc.account.trollo.domain.userboard.entity.UserBoardRole;
 import org.nbc.account.trollo.domain.userboard.exception.ForbiddenAccessBoardException;
 import org.nbc.account.trollo.domain.userboard.exception.NotFoundUserBoardException;
 import org.nbc.account.trollo.domain.userboard.repository.UserBoardRepository;
+import org.nbc.account.trollo.global.exception.CustomException;
 import org.nbc.account.trollo.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,15 +31,15 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void createBoard(BoardRequestDto boardRequestDto, User user) {
 
-        Board boardBuilder = Board.builder()
+        Board board = Board.builder()
             .name(boardRequestDto.name())
             .color(boardRequestDto.color())
             .build();
-        boardRepository.save(boardBuilder);
-        //보드 생성하면서 생성자에게 권한줘야됨
+        boardRepository.save(board);
+
         UserBoard creator = UserBoard.builder()
             .user(user)
-            .board(boardBuilder)
+            .board(board)
             .role(UserBoardRole.CREATOR)
             .build();
         userBoardRepository.save(creator);
@@ -74,8 +75,23 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardListResponseDto> mainBoard(User user) {
-        //List<Board> boards = userBoardRepository.findByUser_Id(user.getId());
-        return null;
+
+        List<UserBoard> userboards = userBoardRepository.findAllByUser(user).orElse(null);
+
+        List<BoardListResponseDto> boards = null;
+
+        if(userboards!=null){
+             boards = userboards
+                .stream()
+                .map(
+                    (UserBoard userboard)
+                -> new BoardListResponseDto(
+                    userboard.getBoard().getId(),
+                        userboard.getBoard().getName(),
+                        userboard.getBoard().getColor())).toList();
+        }
+
+        return boards;
     }
 
     private Board checkUserInBoard(Long boardId, Long userId) {
