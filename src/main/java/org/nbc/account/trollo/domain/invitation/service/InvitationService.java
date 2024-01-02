@@ -1,7 +1,6 @@
 package org.nbc.account.trollo.domain.invitation.service;
 
 import org.nbc.account.trollo.domain.invitation.dto.response.InvitationsRes;
-import org.nbc.account.trollo.domain.invitation.dto.response.UserBoardRes;
 import org.nbc.account.trollo.domain.user.entity.User;
 
 public interface InvitationService {
@@ -10,7 +9,7 @@ public interface InvitationService {
 
     InvitationsRes getInvitations(User user);
 
-    UserBoardRes approveInvitation(Long boardId, User user);
+    void approveInvitation(Long boardId, User user);
 
     void rejectInvitation(Long boardId, User user);
 
